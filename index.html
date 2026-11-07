@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="hr">
 <head>
+<link rel="manifest" href="manifest.json"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#103e66"><title>Stjepanov Otok — 3D Avantura</title>
 <style>
@@ -50,4 +51,6 @@ const targetX=THREE.MathUtils.clamp(px+3,0,39);const desired=new THREE.Vector3(t
 camera.position.set(0,7.2,17.5);camera.lookAt(0,2.1,0);dude.position.set(px,py,0);requestAnimationFrame(frame);
 window.addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<innerHeight?68:58;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)})
 })();
-</script></body></html>
+</script><a href="https://ekorustika-lang.github.io/ekorustika-vizitka/" target="_blank" rel="noopener" style="position:fixed;top:8px;right:8px;z-index:9999;display:flex;align-items:center;gap:6px;padding:4px 8px;border:1px solid #22e57a55;border-radius:10px;background:#05080ccc;color:#cfd8dc;font:11px sans-serif;text-decoration:none"><img src="https://ekorustika-lang.github.io/ekorustika-vizitka/logo.jpg" alt="Ekorustika Digital" width="20" height="20" style="border-radius:5px"><span>Izradio <b style="color:#22e57a">EKORUSTIKA DIGITAL</b></span></a>
+<script>if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');</script>
+</body></html>
