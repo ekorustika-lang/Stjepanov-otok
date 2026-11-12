@@ -21,7 +21,7 @@ canvas{display:block}
 #knob{position:absolute;left:50px;top:50px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.85)}
 #jumpB,#runB{position:fixed;border-radius:50%;border:3px solid rgba(255,255,255,.7);color:#fff;font-weight:900;z-index:6}
 #jumpB{right:24px;bottom:28px;width:130px;height:130px;background:rgba(255,140,0,.85);font-size:24px}
-#runB{right:166px;bottom:40px;width:92px;height:92px;background:rgba(0,120,255,.7);font-size:18px}
+#runB{right:43px;bottom:178px;width:92px;height:92px;background:rgba(0,120,255,.7);font-size:18px}
 #runB.on{background:rgba(0,200,120,.85)}
 #msg{position:fixed;top:28%;left:0;right:0;text-align:center;font-size:clamp(22px,5vw,40px);font-weight:900;color:#fff;text-shadow:0 3px 8px rgba(0,0,0,.5);pointer-events:none;z-index:7;transition:opacity .4s;opacity:0}
 #help{position:fixed;bottom:8px;left:0;right:0;text-align:center;color:#fff;font-size:13px;text-shadow:0 1px 3px #000;pointer-events:none;z-index:4}
@@ -224,7 +224,7 @@ function update(dt,t){
 }
 function frame(ms){requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.033,t-lastT||.016);lastT=t;if(playing)update(dt,t);else{camera.position.set(Math.sin(t*.1)*30,18,-50+Math.cos(t*.1)*60);camera.lookAt(0,0,-55)}renderer.render(scene,camera)}
 function finish(){playing=false;stopMusic();sfx.win();const fin=score();const best=Math.max(fin,+localStorage.getItem('sa_best1')||0);localStorage.setItem('sa_best1',best);localStorage.removeItem('sa_save1');
- $('wTitle').textContent=T[lang].win;$('wText').innerHTML=T[lang].wtext(S.coins,S.gems,fin,Math.floor(S.time))+`<br>🏆 ${T[lang].best}: ${best}`;showUI('win')}
+ $('wTitle').textContent=T[lang].win;$('wText').innerHTML=T[lang].wtext(S.coins,S.gems,fin,Math.floor(S.time))+`<br>🏆 ${T[lang].best}: ${best}<br>🌴 Idemo u džunglu...`;showUI('win');setTimeout(()=>{location.href='dzungla.html?start=1'},3000)}
 function showUI(w){$('start').classList.toggle('hidden',w!=='start');$('win').classList.toggle('hidden',w!=='win');$('over').classList.toggle('hidden',w!=='over');const g=w==='game';$('hud').classList.toggle('hidden',!g);$('help').classList.toggle('hidden',!g||isTouch);$('touch').classList.toggle('hidden',!g||!isTouch);applyLang()}
 function play(fresh){ac();S=(!fresh&&getSave())||newState();if(!(S.lives>0))S.lives=3;applyState();playing=true;showUI('game');startMusic();lastT=performance.now()/1000;camPos.set(P.pos.x,P.pos.y+5.5,P.pos.z+10)}
 $('playB').onclick=()=>play(false);$('resetB').onclick=()=>{localStorage.removeItem('sa_save1');play(true)};$('againB').onclick=()=>play(true);$('retryB').onclick=()=>{S.lives=3;persist();play(false)};
