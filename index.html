@@ -7,21 +7,21 @@
 html,body{margin:0;height:100%;overflow:hidden;background:#3ec6ff;font-family:system-ui,"Segoe UI",Roboto,sans-serif;touch-action:none;user-select:none}
 canvas{display:block}
 #hud{position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;z-index:5}
-.pill{background:rgba(0,0,0,.45);color:#fff;padding:7px 12px;border-radius:20px;font-weight:700;font-size:17px;margin:0 5px 5px 0;display:inline-block}
+.pill{background:rgba(0,0,0,.45);color:#fff;padding:8px 14px;border-radius:22px;font-weight:800;font-size:20px;margin:0 5px 5px 0;display:inline-block}
 .btns{pointer-events:auto;white-space:nowrap}
-.btns button{background:rgba(0,0,0,.45);color:#fff;border:0;border-radius:20px;padding:8px 12px;font-size:16px;margin-left:6px;cursor:pointer}
+.btns button{background:rgba(0,0,0,.45);color:#fff;border:0;border-radius:28px;padding:12px 18px;font-size:26px;margin-left:6px;cursor:pointer}
 .screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#24b6ff,#7fe3ff 60%,#ffe08a);z-index:10;text-align:center;padding:20px}
 .screen h1{font-size:clamp(32px,7vw,64px);color:#fff;margin:0 0 6px;text-shadow:0 4px 0 #e36b00,0 8px 16px rgba(0,0,0,.3)}
 .screen p{color:#05405e;font-size:clamp(15px,3vw,20px);max-width:560px}
 .big{background:#ffb800;color:#5a2d00;border:0;border-radius:40px;font-size:clamp(28px,6vw,44px);font-weight:900;padding:16px 60px;box-shadow:0 8px 0 #c47a00;cursor:pointer;margin:14px}
 .big:active{transform:translateY(5px);box-shadow:0 3px 0 #c47a00}
-.small{background:#fff;border:0;border-radius:20px;padding:8px 16px;font-size:16px;margin:4px;cursor:pointer}
+.small{background:#fff;border:0;border-radius:28px;padding:14px 22px;font-size:22px;margin:4px;cursor:pointer}
 .hidden{display:none!important}
-#joy{position:fixed;left:20px;bottom:20px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.25);border:3px solid rgba(255,255,255,.6);z-index:6}
-#knob{position:absolute;left:37px;top:37px;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.85)}
+#joy{position:fixed;left:22px;bottom:22px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.25);border:3px solid rgba(255,255,255,.6);z-index:6}
+#knob{position:absolute;left:50px;top:50px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.85)}
 #jumpB,#runB{position:fixed;border-radius:50%;border:3px solid rgba(255,255,255,.7);color:#fff;font-weight:900;z-index:6}
-#jumpB{right:24px;bottom:30px;width:96px;height:96px;background:rgba(255,140,0,.75);font-size:18px}
-#runB{right:132px;bottom:40px;width:66px;height:66px;background:rgba(0,120,255,.6);font-size:13px}
+#jumpB{right:24px;bottom:28px;width:130px;height:130px;background:rgba(255,140,0,.85);font-size:24px}
+#runB{right:43px;bottom:178px;width:92px;height:92px;background:rgba(0,120,255,.7);font-size:18px}
 #runB.on{background:rgba(0,200,120,.85)}
 #msg{position:fixed;top:28%;left:0;right:0;text-align:center;font-size:clamp(22px,5vw,40px);font-weight:900;color:#fff;text-shadow:0 3px 8px rgba(0,0,0,.5);pointer-events:none;z-index:7;transition:opacity .4s;opacity:0}
 #help{position:fixed;bottom:8px;left:0;right:0;text-align:center;color:#fff;font-size:13px;text-shadow:0 1px 3px #000;pointer-events:none;z-index:4}
@@ -34,11 +34,13 @@ canvas{display:block}
  <p id="tSub"></p>
  <button class="big" id="playB">IGRAJ</button>
  <div><button class="small" id="langB">🌐 EN</button><button class="small" id="musB2">🎵</button><button class="small hidden" id="resetB"></button></div>
+<div id="lvls" style="margin:6px 0"></div><script>(function(){let u=+localStorage.getItem('sa_unlock')||1;if(localStorage.getItem('sa_best1'))u=Math.max(u,2);if(localStorage.getItem('sa_best2'))u=Math.max(u,3);localStorage.setItem('sa_unlock',u);const L=[['./','🏖️ 1. Plaža'],['dzungla.html','🌴 2. Džungla'],['gusari.html','🏴‍☠️ 3. Gusari']];document.getElementById('lvls').innerHTML='<div style="color:#05405e;font-weight:800;font-size:18px">Odaberi razinu:</div>'+L.map((l,i)=>i<u?`<button class="small" style="font-weight:800" onclick="location.href='${l[0]}'">${l[1]}</button>`:`<button class="small" disabled style="opacity:.5">🔒 ${l[1]}</button>`).join('')})()</script>
  <p id="best" style="font-weight:700"></p>
 </div>
-<div id="win" class="screen hidden"><h1 id="wTitle"></h1><p id="wText"></p><button class="big" id="againB"></button></div>
+<div id="over" class="screen hidden"><h1 id="oTitle"></h1><p id="oText"></p><button class="big" id="retryB"></button></div>
+<div id="win" class="screen hidden"><h1 id="wTitle"></h1><p id="wText"></p><button class="big" id="nextB" style="background:#3fcf5a;color:#063;box-shadow:0 8px 0 #1d8a32">NASTAVI ➡</button><button class="big" id="menuW" style="background:#fff;color:#05405e;box-shadow:0 8px 0 #9ab">IZBORNIK</button><button class="small" id="againB"></button></div>
 <div id="hud" class="hidden">
- <div><span class="pill" id="coinsH">🪙 0</span><span class="pill" id="gemH">💎 0</span><span class="pill" id="scoreH">0</span><span class="pill" id="timeH">0s</span></div>
+ <div><span class="pill" id="coinsH">🪙 0</span><span class="pill" id="gemH">💎 0</span><span class="pill" id="scoreH">0</span><span class="pill" id="livesH">❤️❤️❤️</span></div>
  <div class="btns"><button id="musB">🎵</button><button id="menuB">☰</button></div>
 </div>
 <div id="msg"></div><div id="help" class="hidden"></div>
@@ -47,19 +49,19 @@ canvas{display:block}
 <script type="module">
 import * as THREE from 'three';
 window.__ok=1;
-const T={hr:{sub:'Razina 1: Plaža avanture. Skupi zlatnike i dragulje, preskoči prepreke, pronađi tajni ključ i stigni do zastave!',play:'IGRAJ',cont:'NASTAVI',reset:'Nova igra',best:'Najbolji rezultat',help:'WASD/strelice = kretanje · Shift = trčanje · Razmak = skok',jump:'SKOK',run:'TRČI',cp:'Kontrolna točka spremljena!',fall:'Ups! Natrag na kontrolnu točku',win:'BRAVO, STJEPANE!',wtext:(c,g,s,t)=>`Prešao si Plažu avanture!<br>Zlatnici: ${c} · Dragulji: ${g} · Vrijeme: ${t} s<br><b>Rezultat: ${s}</b><br>Uskoro: Čarobna džungla 🌴`,again:'IGRAJ PONOVNO',gem:'Dragulj! +50',key:'Ključ! Most se spustio!',locked:'Most je podignut. Pronađi ključ na tajnoj stijeni iza slapa!',lang:'🌐 EN'},
-en:{sub:'Level 1: Adventure Beach. Collect coins and gems, jump over obstacles, find the secret key and reach the flag!',play:'PLAY',cont:'CONTINUE',reset:'New game',best:'Best score',help:'WASD/arrows = move · Shift = run · Space = jump',jump:'JUMP',run:'RUN',cp:'Checkpoint saved!',fall:'Oops! Back to checkpoint',win:'WELL DONE, STJEPAN!',wtext:(c,g,s,t)=>`You beat Adventure Beach!<br>Coins: ${c} · Gems: ${g} · Time: ${t} s<br><b>Score: ${s}</b><br>Coming soon: Magic Jungle 🌴`,again:'PLAY AGAIN',gem:'Gem! +50',key:'Key! The bridge is down!',locked:'The bridge is up. Find the key on the secret rock behind the waterfall!',lang:'🌐 HR'}};
+const T={hr:{sub:'Razina 1: Plaža avanture. Skupi zlatnike i dragulje, preskoči prepreke, pronađi tajni ključ i stigni do zastave!',play:'IGRAJ',cont:'NASTAVI',reset:'Nova igra',best:'Najbolji rezultat',help:'WASD/strelice = kretanje · Shift = trčanje · Razmak = skok',jump:'SKOK',run:'TRČI',cp:'Kontrolna točka spremljena!',fall:'Ups! Natrag na kontrolnu točku',over:'Nema više života!',otext:'Ne brini, pokušaj ponovno od zadnje kontrolne točke! 😊',retry:'POKUŠAJ PONOVNO',win:'BRAVO, STJEPANE!',wtext:(c,g,s,t)=>`🎉 Prešao si Plažu avanture! 🎉<br>Zlatnici: ${c} · Dragulji: ${g}<br><b>Rezultat: ${s}</b><br>Uskoro: Čarobna džungla 🌴`,again:'IGRAJ PONOVNO',gem:'Dragulj! +50',key:'Bravo! Pronašao si ključ! 🔑 Most se spušta!',locked:'Most je zatvoren. Vrati se na drugi otok i prati putokaz 🔑 do velikog slapa!',lang:'🌐 EN'},
+en:{sub:'Level 1: Adventure Beach. Collect coins and gems, jump over obstacles, find the secret key and reach the flag!',play:'PLAY',cont:'CONTINUE',reset:'New game',best:'Best score',help:'WASD/arrows = move · Shift = run · Space = jump',jump:'JUMP',run:'RUN',cp:'Checkpoint saved!',fall:'Oops! Back to checkpoint',over:'No more lives!',otext:'Don\'t worry, try again from the last checkpoint! 😊',retry:'TRY AGAIN',win:'BRAVO, STJEPAN!',wtext:(c,g,s,t)=>`🎉 You beat Adventure Beach! 🎉<br>Coins: ${c} · Gems: ${g}<br><b>Score: ${s}</b><br>Coming soon: Magic Jungle 🌴`,again:'PLAY AGAIN',gem:'Gem! +50',key:'Bravo! You found the key! 🔑 The bridge is coming down!',locked:'The bridge is closed. Go back to the second island and follow the 🔑 sign to the big waterfall!',lang:'🌐 HR'}};
 let lang=localStorage.getItem('sa_lang')||'hr';
 const $=id=>document.getElementById(id);
 const isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
 function getSave(){try{return JSON.parse(localStorage.getItem('sa_save1'))}catch(e){return null}}
-function applyLang(){const t=T[lang],s=getSave();$('tSub').textContent=t.sub;$('playB').textContent=s?t.cont:t.play;$('resetB').textContent=t.reset;$('resetB').classList.toggle('hidden',!s);$('langB').textContent=t.lang;$('help').textContent=t.help;$('jumpB').textContent=t.jump;$('runB').textContent=t.run;$('againB').textContent=t.again;const b=+localStorage.getItem('sa_best1')||0;$('best').textContent=b?`${t.best}: ${b}`:'';document.documentElement.lang=lang}
+function applyLang(){const t=T[lang],s=getSave();$('tSub').textContent=t.sub;$('playB').textContent=s?t.cont:t.play;$('resetB').textContent=t.reset;$('resetB').classList.toggle('hidden',!s);$('langB').textContent=t.lang;$('help').textContent=t.help;$('jumpB').textContent=t.jump;$('runB').textContent=t.run;$('againB').textContent=t.again;$('retryB').textContent=t.retry;$('oTitle').textContent=t.over;$('oText').textContent=t.otext;const b=+localStorage.getItem('sa_best1')||0;$('best').textContent=b?`${t.best}: ${b}`:'';document.documentElement.lang=lang}
 let AC=null,musicOn=localStorage.getItem('sa_mus')!=='0',musTimer=null,step=0;
 function ac(){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
 function tone(f,d,type,v,t0,f2){const a=ac(),o=a.createOscillator(),g=a.createGain();o.type=type||'sine';const t=a.currentTime+(t0||0);o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v||.1,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.02)}
 const sfx={coin:()=>{tone(988,.08,'square',.05);tone(1319,.15,'square',.05,.07)},jump:()=>tone(300,.2,'triangle',.12,0,700),gem:()=>[784,988,1175,1568].forEach((f,i)=>tone(f,.2,'triangle',.1,i*.07)),cp:()=>[523,659,784].forEach((f,i)=>tone(f,.25,'sine',.12,i*.1)),fall:()=>[400,300,200].forEach((f,i)=>tone(f,.2,'sawtooth',.05,i*.12)),win:()=>[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,.3,'triangle',.12,i*.15))};
-const mel=[523,659,784,659,587,698,880,698,523,659,784,1047,988,784,659,587],bass=[131,131,175,175,147,147,196,196];
-function startMusic(){stopMusic();if(!musicOn)return;musTimer=setInterval(()=>{if(step%16!=15)tone(mel[step%16],.2,'triangle',.04);if(step%2==0)tone(bass[(step/2|0)%8],.4,'sine',.07);step++},230)}
+const mel=[784,659,784,1047,880,784,659,784,698,880,1047,880,784,659,587,523],bass=[131,196,175,220,147,196,131,196];
+function startMusic(){stopMusic();if(!musicOn)return;musTimer=setInterval(()=>{if(step%16!=15)tone(mel[step%16],.16,'square',.025);if(step%2==0)tone(bass[(step/2|0)%8],.4,'sine',.07);step++},175)}
 function stopMusic(){clearInterval(musTimer);musTimer=null}
 function updMusBtn(){$('musB').textContent=$('musB2').textContent=musicOn?'🎵':'🔇'}
 function toggleMusic(){musicOn=!musicOn;localStorage.setItem('sa_mus',musicOn?'1':'0');updMusBtn();if(musicOn&&playing)startMusic();else stopMusic()}
@@ -85,21 +87,29 @@ island(0,-116,20,24); // D (cilj)
 // prepreke - stijene na plaži
 box(-3,.5,-14,4,1,1.5,mats.rock);box(4,.6,-20,5,1.2,1.5,mats.rock);box(0,.75,-12,1.5,1.5,1.5,mats.rock);
 // drveni most A->B (z -25..-37), daske s rupama
-for(let i=0;i<7;i++){if(i===3)continue;box(0,-.15,-25.8-i*1.7,3,.3,1.4,mats.wood)}
-box(-1.6,.5,-31,.2,1,12,mats.dark,{deco:true});box(1.6,.5,-31,.2,1,12,mats.dark,{deco:true});
+for(let i=0;i<7;i++){box(0,-.15,-25.8-i*1.7,5,.3,1.6,mats.wood)}
+box(-2.6,.5,-31,.2,1,12,mats.dark,{deco:true});box(2.6,.5,-31,.2,1,12,mats.dark,{deco:true});
 // otok B: sanduci stube do tajne stijene i slap
 box(6,.5,-44,2,1,2,mats.wood);box(8,1.2,-46.5,2,2.4,2,mats.wood);box(9.5,1.8,-49.5,2,3.6,2,mats.stone);
 box(9.5,3.9,-54,3,.6,3,mats.stone); // tajna stijena s ključem (iza slapa)
 box(11.6,5,-55,1.2,12,9,mats.rock,{deco:true});
-const fall=new THREE.Mesh(new THREE.PlaneGeometry(3,10),new THREE.MeshStandardMaterial({color:0xbfefff,transparent:true,opacity:.6}));fall.position.set(9.5,4,-52.3);scene.add(fall);
+const fall=new THREE.Mesh(new THREE.PlaneGeometry(5,11),new THREE.MeshStandardMaterial({color:0xbfefff,emissive:0x2a7fa0,transparent:true,opacity:.75,side:2}));fall.position.set(10.6,5.4,-57.5);fall.rotation.y=-Math.PI/2;scene.add(fall);
+box(11.9,5.5,-57.5,1.4,13,12,mats.rock,{deco:true});box(10.2,11.6,-57.5,3,1.2,7,mats.rock,{deco:true});
+box(9.6,6,-51.2,1.6,12,1.6,mats.rock,{deco:true});box(9.6,6,-63.6,1.6,12,1.6,mats.rock,{deco:true});
+const pool=new THREE.Mesh(new THREE.CylinderGeometry(2.6,2.6,.1,20),new THREE.MeshStandardMaterial({color:0x3fd0ff,emissive:0x0a5f80,transparent:true,opacity:.85}));pool.position.set(9.2,.08,-57.5);scene.add(pool);
+const foams=[];for(let i=0;i<7;i++){const f=new THREE.Mesh(new THREE.SphereGeometry(.45,8,6),new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.8}));f.position.set(9.8,.3,-59.5+i*.66);scene.add(f);foams.push(f)}
+function signTex(){const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d');x.fillStyle='#ffd23f';x.fillRect(0,0,256,128);x.strokeStyle='#8b5a2b';x.lineWidth=12;x.strokeRect(6,6,244,116);x.font='72px sans-serif';x.textAlign='center';x.textBaseline='middle';x.fillText('🔑',80,68);x.fillStyle='#c0392b';x.beginPath();x.moveTo(140,46);x.lineTo(195,46);x.lineTo(195,24);x.lineTo(240,64);x.lineTo(195,104);x.lineTo(195,82);x.lineTo(140,82);x.fill();return new THREE.CanvasTexture(c)}
+const sTex=signTex();
+function signpost(x,z,tx,tz){const g=new THREE.Group();const p=new THREE.Mesh(new THREE.BoxGeometry(.25,3,.25),mats.dark);p.position.y=1.5;g.add(p);const fm=new THREE.MeshBasicMaterial({map:sTex}),bm=new THREE.MeshBasicMaterial({map:sTex});const b=new THREE.Mesh(new THREE.BoxGeometry(2.4,1.2,.15),[mats.wood,mats.wood,mats.wood,mats.wood,fm,bm]);b.position.y=2.7;g.add(b);g.position.set(x,0,z);const dx=tx-x,dz=tz-z;g.rotation.y=Math.atan2(-dz,dx);g.traverse(o=>o.castShadow=true);scene.add(g)}
+signpost(-2.5,-40,8,-57.5);signpost(3.5,-47,8,-57.5);
 box(-5,.75,-52,2,1.5,2,mats.wood);box(-2,.5,-58,6,1,1.2,mats.rock);
 // pokretne platforme B->C (z -63..-77)
-const movers=[box(0,-.2,-66,3.5,.4,3.5,mats.wood,{move:{ax:'x',amp:4,spd:1.1}}),box(0,-.2,-72,3.5,.4,3.5,mats.wood,{move:{ax:'x',amp:4,spd:1.5,ph:1.6}})];
+const movers=[box(0,-.2,-66,5,.4,4.5,mats.wood,{move:{ax:'x',amp:2.5,spd:.8}}),box(0,-.2,-72,5,.4,4.5,mats.wood,{move:{ax:'x',amp:2.5,spd:1,ph:1.6}})];
 // otok C: skokovi
 box(-3,.6,-84,2,1.2,2,mats.stone);box(0,1.3,-87,2,2.6,2,mats.stone);box(3,.6,-90,2,1.2,2,mats.stone);
 // pokretni most C->D (aktivan kad se nađe ključ)
-const bridge=box(0,-.15,-99.5,3,.3,10,mats.wood,{active:false});bridge.mesh.position.y=4;bridge.mesh.rotation.x=-1.2;
-const posts=[box(-1.8,1.5,-95,.4,3,.4,mats.dark,{deco:true}),box(1.8,1.5,-95,.4,3,.4,mats.dark,{deco:true})];
+const bridge=box(0,-.15,-99.5,5,.3,10,mats.wood,{active:false});bridge.mesh.position.y=4;bridge.mesh.rotation.x=-1.2;
+const posts=[box(-2.8,1.5,-95,.4,3,.4,mats.dark,{deco:true}),box(2.8,1.5,-95,.4,3,.4,mats.dark,{deco:true})];
 // hram/cilj na otoku D
 box(0,.4,-121,8,.8,6,mats.stone,{deco:true});box(-3,2.5,-122,1,4,1,mats.stone,{deco:true});box(3,2.5,-122,1,4,1,mats.stone,{deco:true});box(0,4.8,-122,8,.8,2,mats.stone,{deco:true});
 const pole=new THREE.Mesh(new THREE.CylinderGeometry(.1,.1,5),M(0xffffff));pole.position.set(0,2.5,-114);scene.add(pole);
@@ -113,12 +123,12 @@ const coinGeo=new THREE.CylinderGeometry(.4,.4,.1,16),coinMat=new THREE.MeshStan
 const items=[];
 function coin(x,y,z){const m=new THREE.Mesh(coinGeo,coinMat);m.rotation.x=Math.PI/2;m.position.set(x,y,z);scene.add(m);items.push({m,type:'coin',id:items.length,y})}
 function gem(x,y,z){const m=new THREE.Mesh(new THREE.OctahedronGeometry(.45),new THREE.MeshStandardMaterial({color:0xff2fa8,metalness:.4,roughness:.1,emissive:0x550033}));m.position.set(x,y,z);scene.add(m);items.push({m,type:'gem',id:items.length,y})}
-function keyItem(x,y,z){const g=new THREE.Group();const km=new THREE.MeshStandardMaterial({color:0x00e5ff,emissive:0x006677,metalness:.6});const r=new THREE.Mesh(new THREE.TorusGeometry(.3,.08,8,16),km);r.position.y=.35;const s=new THREE.Mesh(new THREE.BoxGeometry(.1,.6,.1),km);g.add(r,s);g.position.set(x,y,z);scene.add(g);items.push({m:g,type:'key',id:items.length,y})}
+function keyItem(x,y,z){const g=new THREE.Group();const km=new THREE.MeshStandardMaterial({color:0xffd700,emissive:0xb38600,metalness:.7,roughness:.25});const r=new THREE.Mesh(new THREE.TorusGeometry(.45,.12,8,20),km);r.position.y=.55;const s=new THREE.Mesh(new THREE.BoxGeometry(.16,1,.16),km);const t1=new THREE.Mesh(new THREE.BoxGeometry(.35,.14,.14),km);t1.position.set(.2,-.35,0);const t2=t1.clone();t2.position.y=-.1;const glow=new THREE.Mesh(new THREE.SphereGeometry(1.1,16,12),new THREE.MeshBasicMaterial({color:0xfff2a0,transparent:true,opacity:.28}));const pl=new THREE.PointLight(0xffd34d,2.5,8);g.add(r,s,t1,t2,glow,pl);g.userData.glow=glow;g.position.set(x,y,z);scene.add(g);items.push({m:g,type:'key',id:items.length,y})}
 for(let i=0;i<6;i++)coin(0,1,-2-i*2.2);
 [[-3,1.6,-14],[4,1.9,-20],[0,2.3,-12],[-7,1,-6],[7,1,-10],[0,1.4,-30.9]].forEach(p=>coin(...p));
 gem(-10,1,-14);
 [[6,1.7,-44],[8,3.1,-46.5],[9.5,4.5,-49.5],[-5,2.2,-52],[-2,1.5,-58],[0,1,-40],[0,1,-44]].forEach(p=>coin(...p));
-keyItem(9.5,4.7,-54);gem(-9,1,-50);
+keyItem(7.6,1.3,-57.5);gem(-9,1,-50);
 [[0,1.2,-66],[0,1.2,-72],[-3,2,-84],[0,3.4,-87],[3,2,-90],[6,1,-80]].forEach(p=>coin(...p));
 gem(0,4,-87);
 for(let i=0;i<5;i++)coin(0,1,-106-i*1.8);
@@ -152,16 +162,16 @@ $('runB').addEventListener('touchstart',e=>{touchRun=!touchRun;$('runB').classLi
 // ---------- STANJE ----------
 const P={pos:new THREE.Vector3(),vel:new THREE.Vector3(),onGround:false,ground:null,yaw:0,coyote:0};
 let S,playing=false,lastT=0,walkPh=0,camPos=new THREE.Vector3(0,6,12);
-function newState(){return{cp:0,got:[],coins:0,gems:0,key:false,time:0}}
+function newState(){return{cp:0,got:[],coins:0,gems:0,key:false,time:0,lives:3}}
 function persist(){localStorage.setItem('sa_save1',JSON.stringify(S))}
 function applyState(){items.forEach(it=>it.m.visible=!S.got.includes(it.id));setBridge(S.key,true);cpFlags.forEach((f,i)=>f&&f.material.color.set(i<=S.cp?0x22dd55:0x999999));respawn();hud()}
 function setBridge(on,instant){bridge.active=on;bridge.target=on?1:0;if(instant)bridge.t=bridge.target}
 bridge.t=0;
 function respawn(){P.pos.copy(cps[S.cp]).add(new THREE.Vector3(0,.1,0));P.vel.set(0,0,0);P.yaw=0}
 function score(){return S.coins*10+S.gems*50+(S.key?100:0)}
-function hud(){$('coinsH').textContent=`🪙 ${S.coins}/${totalCoins}`;$('gemH').textContent=`💎 ${S.gems}/3`;$('scoreH').textContent=`⭐ ${score()}`;$('timeH').textContent=`⏱ ${Math.floor(S.time)}s`}
+function hud(){$('coinsH').textContent=`🪙 ${S.coins}/${totalCoins}`;$('gemH').textContent=`💎 ${S.gems}/3`;$('scoreH').textContent=`⭐ ${score()}`;$('livesH').textContent='❤️'.repeat(Math.max(0,S.lives))+'🤍'.repeat(3-Math.max(0,S.lives))}
 // ---------- FIZIKA ----------
-const R=.35,H=1.8,G=26,JV=9.5;
+const R=.35,H=1.8,G=23,JV=10.2;
 function boxOf(s){const c=s.mesh.position;return{x0:c.x-s.w/2,x1:c.x+s.w/2,y0:c.y-s.h/2,y1:c.y+s.h/2,z0:c.z-s.d/2,z1:c.z+s.d/2}}
 function overlap(b,p){return p.x+R>b.x0&&p.x-R<b.x1&&p.z+R>b.z0&&p.z-R<b.z1&&p.y+H>b.y0&&p.y<b.y1}
 function physics(dt,t){
@@ -174,7 +184,7 @@ function physics(dt,t){
  const run=keys.ShiftLeft||keys.ShiftRight||touchRun,sp=run?9.5:5.5;
  const ax=P.onGround?14:6;P.vel.x+=(ix*sp-P.vel.x)*Math.min(1,ax*dt);P.vel.z+=(iz*sp-P.vel.z)*Math.min(1,ax*dt);
  if(L>.1)P.yaw=Math.atan2(-ix,-iz);
- P.coyote=P.onGround?.12:P.coyote-dt;
+ P.coyote=P.onGround?.22:P.coyote-dt;
  if(jumpQ&&P.coyote>0){P.vel.y=JV;P.coyote=0;P.onGround=false;sfx.jump()}jumpQ=false;
  P.vel.y-=G*dt;
  const act=solids.filter(s=>s.active);
@@ -182,7 +192,7 @@ function physics(dt,t){
  for(const a of ['x','z']){P.pos[a]+=P.vel[a]*dt;for(const s of act){const b=boxOf(s);if(overlap(b,P.pos)){if(P.pos.y>b.y1-.45){P.pos.y=b.y1;continue}const c=(b[a+'0']+b[a+'1'])/2;P.pos[a]=P.pos[a]<c?b[a+'0']-R-.001:b[a+'1']+R+.001;P.vel[a]=0}}}
  P.pos.y+=P.vel.y*dt;P.onGround=false;P.ground=null;
  for(const s of act){const b=boxOf(s);if(overlap(b,P.pos)){if(P.vel.y<=0&&P.pos.y-P.vel.y*dt>=b.y1-.5){P.pos.y=b.y1;P.vel.y=0;P.onGround=true;P.ground=s}else if(P.vel.y>0){P.pos.y=b.y0-H;P.vel.y=0}}}
- if(P.pos.y<-4){sfx.fall();say(T[lang].fall);respawn()}
+ if(P.pos.y<-4){sfx.fall();S.lives--;persist();if(S.lives<=0){respawn();playing=false;stopMusic();showUI('over')}else{say(T[lang].fall);respawn()}hud()}
 }
 // ---------- PETLJA ----------
 let warnT=0;
@@ -191,7 +201,7 @@ function update(dt,t){
  // predmeti
  items.forEach(it=>{if(!it.m.visible)return;it.m.rotation.y+=dt*2.5;if(it.type!=='coin')it.m.position.y=it.y+Math.sin(t*2+it.id)*.15;else it.m.rotation.z+=dt*3;
   const d=it.m.position.distanceTo(new THREE.Vector3(P.pos.x,P.pos.y+.9,P.pos.z));
-  if(d<1.1){it.m.visible=false;S.got.push(it.id);if(it.type==='coin'){S.coins++;sfx.coin()}else if(it.type==='gem'){S.gems++;sfx.gem();say(T[lang].gem)}else{S.key=true;setBridge(true);sfx.gem();say(T[lang].key)}hud();persist()}});
+  if(d<(it.type==='key'?1.8:1.1)){it.m.visible=false;S.got.push(it.id);if(it.type==='coin'){S.coins++;sfx.coin()}else if(it.type==='gem'){S.gems++;sfx.gem();say(T[lang].gem)}else{S.key=true;setBridge(true);sfx.gem();say(T[lang].key)}hud();persist()}});
  // kontrolne točke
  cps.forEach((c,i)=>{if(i>S.cp&&Math.abs(P.pos.z-c.z)<2.5&&Math.abs(P.pos.x-c.x)<8&&P.pos.y>-1){S.cp=i;cpFlags[i].material.color.set(0x22dd55);sfx.cp();say(T[lang].cp);persist()}});
  // most
@@ -200,7 +210,7 @@ function update(dt,t){
  // cilj
  if(P.pos.z<-112.5&&Math.abs(P.pos.x)<3&&P.pos.y>-.5)finish();
  flag.rotation.y=Math.sin(t*3)*.25;
- water.position.y=-1.4+Math.sin(t*.8)*.08;fall.material.opacity=.5+Math.sin(t*8)*.1;
+ water.position.y=-1.4+Math.sin(t*.8)*.08;fall.material.opacity=.65+Math.sin(t*8)*.1;foams.forEach((f,i)=>{const k=1+Math.sin(t*6+i)*.25;f.scale.set(k,k,k)});items.forEach(it=>{if(it.type==='key'&&it.m.userData.glow)it.m.userData.glow.material.opacity=.2+Math.sin(t*4)*.1});
  // animacija lika
  hero.position.copy(P.pos);let dy=P.yaw-hero.rotation.y;dy=Math.atan2(Math.sin(dy),Math.cos(dy));hero.rotation.y+=dy*Math.min(1,dt*12);
  const hs=Math.hypot(P.vel.x,P.vel.z);walkPh+=hs*dt*1.6;const sw=P.onGround?Math.sin(walkPh)*Math.min(1,hs/5)*.9:-.6;
@@ -209,16 +219,17 @@ function update(dt,t){
  let gy=-50;for(const s of solids){if(!s.active)continue;const b=boxOf(s);if(P.pos.x>b.x0&&P.pos.x<b.x1&&P.pos.z>b.z0&&P.pos.z<b.z1&&b.y1<=P.pos.y+.05&&b.y1>gy)gy=b.y1}
  shadowBlob.visible=gy>-50;shadowBlob.position.set(P.pos.x,gy+.02,P.pos.z);
  // kamera
- const target=new THREE.Vector3(P.pos.x*.7,P.pos.y+5.5,P.pos.z+10);camPos.lerp(target,Math.min(1,dt*4));camera.position.copy(camPos);camera.lookAt(P.pos.x,P.pos.y+1.2,P.pos.z-4);
+ const target=new THREE.Vector3(P.pos.x*.7,P.pos.y+4.3,P.pos.z+7.8);camPos.lerp(target,Math.min(1,dt*4));camera.position.copy(camPos);camera.lookAt(P.pos.x,P.pos.y+1.2,P.pos.z-4);
  sun.position.set(P.pos.x+20,40,P.pos.z+15);sun.target.position.set(P.pos.x,0,P.pos.z);
  hud();
 }
 function frame(ms){requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.033,t-lastT||.016);lastT=t;if(playing)update(dt,t);else{camera.position.set(Math.sin(t*.1)*30,18,-50+Math.cos(t*.1)*60);camera.lookAt(0,0,-55)}renderer.render(scene,camera)}
-function finish(){playing=false;stopMusic();sfx.win();const tb=Math.max(0,300-Math.floor(S.time))*2,fin=score()+tb;const best=Math.max(fin,+localStorage.getItem('sa_best1')||0);localStorage.setItem('sa_best1',best);localStorage.removeItem('sa_save1');
- $('wTitle').textContent=T[lang].win;$('wText').innerHTML=T[lang].wtext(S.coins,S.gems,fin,Math.floor(S.time))+`<br>🏆 ${T[lang].best}: ${best}`;showUI('win')}
-function showUI(w){$('start').classList.toggle('hidden',w!=='start');$('win').classList.toggle('hidden',w!=='win');const g=w==='game';$('hud').classList.toggle('hidden',!g);$('help').classList.toggle('hidden',!g||isTouch);$('touch').classList.toggle('hidden',!g||!isTouch);applyLang()}
-function play(fresh){ac();S=(!fresh&&getSave())||newState();applyState();playing=true;showUI('game');startMusic();lastT=performance.now()/1000;camPos.set(P.pos.x,P.pos.y+5.5,P.pos.z+10)}
-$('playB').onclick=()=>play(false);$('resetB').onclick=()=>{localStorage.removeItem('sa_save1');play(true)};$('againB').onclick=()=>play(true);
+function finish(){playing=false;stopMusic();sfx.win();const fin=score();const best=Math.max(fin,+localStorage.getItem('sa_best1')||0);localStorage.setItem('sa_best1',best);localStorage.removeItem('sa_save1');
+ $('wTitle').textContent=T[lang].win;$('wText').innerHTML=T[lang].wtext(S.coins,S.gems,fin,Math.floor(S.time))+`<br>🏆 ${T[lang].best}: ${best}<br>🌴 Džungla kreće za <span id="cd">5</span>...`;showUI('win');localStorage.setItem('sa_unlock',Math.max(2,+localStorage.getItem('sa_unlock')||1));let c=5;window.__cd=setInterval(()=>{c--;const e=document.getElementById('cd');if(e)e.textContent=c;if(c<=0){clearInterval(window.__cd);location.href='dzungla.html?start=1'}},1000)}
+function showUI(w){$('start').classList.toggle('hidden',w!=='start');$('win').classList.toggle('hidden',w!=='win');$('over').classList.toggle('hidden',w!=='over');const g=w==='game';$('hud').classList.toggle('hidden',!g);$('help').classList.toggle('hidden',!g||isTouch);$('touch').classList.toggle('hidden',!g||!isTouch);applyLang()}
+function play(fresh){ac();S=(!fresh&&getSave())||newState();if(!(S.lives>0))S.lives=3;applyState();playing=true;showUI('game');startMusic();lastT=performance.now()/1000;camPos.set(P.pos.x,P.pos.y+4.3,P.pos.z+7.8)}
+$('playB').onclick=()=>play(false);$('resetB').onclick=()=>{localStorage.removeItem('sa_save1');play(true)};$('againB').onclick=()=>{clearInterval(window.__cd);play(true)};$('retryB').onclick=()=>{S.lives=3;persist();play(false)};
+$('nextB').onclick=()=>{clearInterval(window.__cd);location.href='dzungla.html?start=1'};$('menuW').onclick=()=>{clearInterval(window.__cd);showUI('start')};
 $('menuB').onclick=()=>{playing=false;stopMusic();persist();showUI('start')};
 $('musB').onclick=$('musB2').onclick=()=>{ac();toggleMusic()};
 $('langB').onclick=()=>{lang=lang==='hr'?'en':'hr';localStorage.setItem('sa_lang',lang);applyLang()};
