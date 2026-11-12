@@ -34,10 +34,11 @@ canvas{display:block}
  <p id="tSub"></p>
  <button class="big" id="playB">IGRAJ</button>
  <div><button class="small" onclick="location.href='./'">⬅ Razina 1</button><button class="small hidden" id="langB">🌐 EN</button><button class="small" id="musB2">🎵</button><button class="small hidden" id="resetB"></button></div>
+<div id="lvls" style="margin:6px 0"></div><script>(function(){let u=+localStorage.getItem('sa_unlock')||1;if(localStorage.getItem('sa_best1'))u=Math.max(u,2);if(localStorage.getItem('sa_best2'))u=Math.max(u,3);localStorage.setItem('sa_unlock',u);const L=[['./','🏖️ 1. Plaža'],['dzungla.html','🌴 2. Džungla'],['gusari.html','🏴‍☠️ 3. Gusari']];document.getElementById('lvls').innerHTML='<div style="color:#05405e;font-weight:800;font-size:18px">Odaberi razinu:</div>'+L.map((l,i)=>i<u?`<button class="small" style="font-weight:800" onclick="location.href='${l[0]}'">${l[1]}</button>`:`<button class="small" disabled style="opacity:.5">🔒 ${l[1]}</button>`).join('')})()</script>
  <p id="best" style="font-weight:700"></p>
 </div>
 <div id="over" class="screen hidden"><h1 id="oTitle"></h1><p id="oText"></p><button class="big" id="retryB"></button></div>
-<div id="win" class="screen hidden"><h1 id="wTitle"></h1><p id="wText"></p><button class="big" id="againB"></button><button class="small" onclick="location.href='./'">⬅ Razina 1</button></div>
+<div id="win" class="screen hidden"><h1 id="wTitle"></h1><p id="wText"></p><button class="big" id="nextB" style="background:#3fcf5a;color:#063;box-shadow:0 8px 0 #1d8a32">NASTAVI ➡</button><button class="big" id="menuW" style="background:#fff;color:#05405e;box-shadow:0 8px 0 #9ab">IZBORNIK</button><button class="small" id="againB"></button></div>
 <div id="hud" class="hidden">
  <div><span class="pill" id="coinsH">🪙 0</span><span class="pill" id="gemH">💎 0</span><span class="pill" id="scoreH">0</span><span class="pill" id="livesH">❤️❤️❤️</span></div>
  <div class="btns"><button id="musB">🎵</button><button id="menuB">☰</button></div>
@@ -215,16 +216,17 @@ function update(dt,t){
  let gy=-50;for(const s of solids){if(!s.active)continue;const b=boxOf(s);if(P.pos.x>b.x0&&P.pos.x<b.x1&&P.pos.z>b.z0&&P.pos.z<b.z1&&b.y1<=P.pos.y+.05&&b.y1>gy)gy=b.y1}
  shadowBlob.visible=gy>-50;shadowBlob.position.set(P.pos.x,gy+.02,P.pos.z);
  // kamera
- const target=new THREE.Vector3(P.pos.x*.7,P.pos.y+5.5,P.pos.z+10);camPos.lerp(target,Math.min(1,dt*4));camera.position.copy(camPos);camera.lookAt(P.pos.x,P.pos.y+1.2,P.pos.z-4);
+ const target=new THREE.Vector3(P.pos.x*.7,P.pos.y+4.3,P.pos.z+7.8);camPos.lerp(target,Math.min(1,dt*4));camera.position.copy(camPos);camera.lookAt(P.pos.x,P.pos.y+1.2,P.pos.z-4);
  sun.position.set(P.pos.x+20,40,P.pos.z+15);sun.target.position.set(P.pos.x,0,P.pos.z);
  hud();
 }
 function frame(ms){requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.033,t-lastT||.016);lastT=t;if(playing)update(dt,t);else{camera.position.set(Math.sin(t*.1)*30,18,-50+Math.cos(t*.1)*60);camera.lookAt(0,0,-55)}renderer.render(scene,camera)}
 function finish(){playing=false;stopMusic();sfx.win();const fin=score();const best=Math.max(fin,+localStorage.getItem('sa_best2')||0);localStorage.setItem('sa_best2',best);localStorage.removeItem('sa_save2');
- $('wTitle').textContent=T[lang].win;$('wText').innerHTML=T[lang].wtext(S.coins,S.gems,fin,Math.floor(S.time))+`<br>🏆 ${T[lang].best}: ${best}`;showUI('win')}
+ $('wTitle').textContent=T[lang].win;$('wText').innerHTML=T[lang].wtext(S.coins,S.gems,fin,Math.floor(S.time))+`<br>🏆 ${T[lang].best}: ${best}`;showUI('win');localStorage.setItem('sa_unlock',Math.max(3,+localStorage.getItem('sa_unlock')||1));}
 function showUI(w){$('start').classList.toggle('hidden',w!=='start');$('win').classList.toggle('hidden',w!=='win');$('over').classList.toggle('hidden',w!=='over');const g=w==='game';$('hud').classList.toggle('hidden',!g);$('help').classList.toggle('hidden',!g||isTouch);$('touch').classList.toggle('hidden',!g||!isTouch);applyLang()}
-function play(fresh){ac();S=(!fresh&&getSave())||newState();if(!(S.lives>0))S.lives=3;applyState();playing=true;showUI('game');startMusic();lastT=performance.now()/1000;camPos.set(P.pos.x,P.pos.y+5.5,P.pos.z+10)}
+function play(fresh){ac();S=(!fresh&&getSave())||newState();if(!(S.lives>0))S.lives=3;applyState();playing=true;showUI('game');startMusic();lastT=performance.now()/1000;camPos.set(P.pos.x,P.pos.y+4.3,P.pos.z+7.8)}
 $('playB').onclick=()=>play(false);if(/[?&]start=1/.test(location.search)){setTimeout(()=>{try{play(false)}catch(e){}},300)}$('resetB').onclick=()=>{localStorage.removeItem('sa_save2');play(true)};$('againB').onclick=()=>play(true);$('retryB').onclick=()=>{S.lives=3;persist();play(false)};
+$('nextB').onclick=()=>location.href='gusari.html?start=1';$('menuW').onclick=()=>location.href='./';
 $('menuB').onclick=()=>{playing=false;stopMusic();persist();showUI('start')};
 $('musB').onclick=$('musB2').onclick=()=>{ac();toggleMusic()};
 $('langB').onclick=()=>{lang=lang==='hr'?'en':'hr';localStorage.setItem('sa_lang',lang);applyLang()};
