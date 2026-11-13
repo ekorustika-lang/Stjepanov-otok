@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded',function(){
   c.innerHTML='<button class="big" id="v19cont" style="background:#3fcf5a;color:#063;box-shadow:0 8px 0 #1d8a32">▶ '+(en()?'CONTINUE GAME':'NASTAVI IGRU')+'</button>';
   l.parentNode.insertBefore(c,l);
   document.getElementById('v19cont').onclick=function(){var n=Math.min(+ls.getItem('sa_last')||1,unlocked());if(n<=1){var p=document.getElementById('playB');p&&p.click()}else location.href=PAGES[n-1]+'?start=1'};
-  var v=document.createElement('div');v.style.cssText='font-size:12px;opacity:.6;margin-top:6px';v.textContent='v27';l.parentNode.appendChild(v);
+  var v=document.createElement('div');v.style.cssText='font-size:12px;opacity:.6;margin-top:6px';v.textContent='v30';l.parentNode.appendChild(v);
   var m=Q.match(/locked=(\d)/);
   if(m){var t=el('<div style="background:#fff8e1;border-radius:16px;padding:14px 20px;font-weight:800;color:#05405e">🔒 '+(en()?'That level is still locked! Finish the previous level first.':'Ta razina je još zaključana! Prvo završi prethodnu razinu.')+'</div>','position:fixed;top:20px;left:0;right:0;z-index:99997;display:flex;justify-content:center;font-family:system-ui,sans-serif');setTimeout(function(){t.remove()},3500)}
   if(/start=1/.test(Q))setTimeout(function(){var p=document.getElementById('playB');p&&p.click()},400);
@@ -67,27 +67,19 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 })();
 
-/* v29: nakon prijedene razine automatski prelazak na sljedecu (razine 2-4) */
+/* v30: cim se razina zavrsi, odmah se otvara sljedeca (razine 1-4), bez odbrojavanja */
 (function(){
 var PAGES=['./','dzungla.html','gusari.html','vulkan.html','otok.html'];
 var f=location.pathname.split('/').pop();
-var LVL={'dzungla.html':2,'gusari.html':3,'vulkan.html':4}[f];
+var LVL={'':1,'index.html':1,'dzungla.html':2,'gusari.html':3,'vulkan.html':4}[f];
 if(!LVL)return;
 function go(){
- var w=document.getElementById('win');if(!w)return;
- var t=null;
- function stop(){if(t){clearInterval(t);t=null}}
+ var w=document.getElementById('win');if(!w)return;var gone=false;
  new MutationObserver(function(){
-  if(w.classList.contains('hidden')){stop();return}
-  if(t)return;
-  try{localStorage.setItem('sa_unlock',Math.max(LVL+1,+localStorage.getItem('sa_unlock')||1));localStorage.setItem('sa_last',LVL+1)}catch(e){}
-  var en=localStorage.getItem('sa_lang')==='en',c=5;
-  var p=document.getElementById('v29cd');
-  if(!p){p=document.createElement('div');p.id='v29cd';p.style.cssText='margin:10px 0;font-size:20px;font-weight:900;color:#ffd34d';var x=document.getElementById('wText');if(x&&x.parentNode)x.parentNode.insertBefore(p,x.nextSibling);else w.appendChild(p)}
-  function txt(){p.textContent=(en?'Next level starts in ':'Sljedeća razina kreće za ')+c+'...'}
-  txt();
-  t=setInterval(function(){c--;txt();if(c<=0){stop();location.href=PAGES[LVL]+'?start=1'}},1000);
-  ['menuW','againB'].forEach(function(id){var b=document.getElementById(id);if(b)b.addEventListener('click',stop)});
+  if(gone||w.classList.contains('hidden'))return;gone=true;
+  try{clearInterval(window.__cd)}catch(e){}
+  try{localStorage.setItem('sa_unlock',String(Math.max(LVL+1,+localStorage.getItem('sa_unlock')||1)));localStorage.setItem('sa_last',String(LVL+1))}catch(e){}
+  setTimeout(function(){location.href=PAGES[LVL]+'?start=1'},300);
  }).observe(w,{attributes:true,attributeFilter:['class']});
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();
