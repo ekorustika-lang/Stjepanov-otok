@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hr"><head><meta charset="utf-8"><script src="profili.js"></script>
+<html lang="hr"><head><meta charset="utf-8"><script src="profili.js?v=19"></script><script src="v19.js?v=19"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stjepanov otok avanture 2.0</title>
 <style>
@@ -195,7 +195,7 @@ function physics(dt,t){
  for(const a of ['x','z']){P.pos[a]+=P.vel[a]*dt;for(const s of act){const b=boxOf(s);if(overlap(b,P.pos)){if(P.pos.y>b.y1-.45){P.pos.y=b.y1;continue}const c=(b[a+'0']+b[a+'1'])/2;P.pos[a]=P.pos[a]<c?b[a+'0']-R-.001:b[a+'1']+R+.001;P.vel[a]=0}}}
  P.pos.y+=P.vel.y*dt;P.onGround=false;P.ground=null;
  for(const s of act){const b=boxOf(s);if(overlap(b,P.pos)){if(P.vel.y<=0&&P.pos.y-P.vel.y*dt>=b.y1-.5){P.pos.y=b.y1;P.vel.y=0;P.onGround=true;P.ground=s}else if(P.vel.y>0){P.pos.y=b.y0-H;P.vel.y=0}}}
- if(P.pos.y<-4){sfx.fall();S.lives--;persist();if(S.lives<=0){respawn();playing=false;stopMusic();showUI('over')}else{say(T[lang].fall);respawn()}hud()}
+ if(P.pos.y<-4){sfx.fall();if(!window.V19||V19.hit()){S.lives--;persist()}if(S.lives<=0){respawn();playing=false;stopMusic();if(window.V19)V19.gameOver();else showUI('over')}else{say(T[lang].fall);respawn()}hud()}
 }
 // ---------- PETLJA ----------
 let warnT=0;
