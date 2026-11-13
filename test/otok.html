@@ -270,7 +270,7 @@ function finish(){playing=false;stopMusic();sfx.win();const fin=score();const be
 function showUI(w){$('start').classList.toggle('hidden',w!=='start');$('win').classList.toggle('hidden',w!=='win');$('over').classList.toggle('hidden',w!=='over');const g=w==='game';$('hud').classList.toggle('hidden',!g);$('help').classList.toggle('hidden',!g||isTouch);$('touch').classList.toggle('hidden',!g||!isTouch);applyLang()}
 function play(fresh){ac();opening=0;lid.rotation.x=0;S=(!fresh&&getSave())||newState();if(!(S.lives>0))S.lives=3;applyState();playing=true;showUI('game');startMusic();lastT=performance.now()/1000;camPos.set(P.pos.x,P.pos.y+4.6,P.pos.z+7.2)}
 $('playB').onclick=()=>play(false);if(/[?&]start=1/.test(location.search)){setTimeout(()=>{try{play(false)}catch(e){}},300)}$('resetB').onclick=()=>{localStorage.removeItem('sa_save5');play(true)};$('againB').onclick=()=>{if(window.V19)V19.newAdventure();else play(true)};$('retryB').onclick=()=>{S.lives=3;persist();play(false)};
-$('menuW').onclick=()=>location.href='./';$('castleB').onclick=()=>alert('🏰 MOJ DVORAC je otključan! Prostor za slobodnu igru stiže u sljedećoj nadogradnji.');
+$('menuW').onclick=()=>location.href='./';$('castleB').onclick=()=>{localStorage.setItem('sa_castle','1');location.href='dvorac.html?v=21'};
 $('menuB').onclick=()=>{playing=false;stopMusic();persist();showUI('start')};
 $('musB').onclick=$('musB2').onclick=()=>{ac();toggleMusic()};
 $('langB').onclick=()=>{lang=lang==='hr'?'en':'hr';localStorage.setItem('sa_lang',lang);applyLang()};
