@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hr"><head><meta charset="utf-8"><script src="profili.js?v=19"></script>
+<html lang="hr" translate="no" class="notranslate"><head><meta charset="utf-8"><meta name="google" content="notranslate"><script src="profili.js?v=19"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stjepanov otok – Moj dvorac</title>
 <style>
@@ -24,7 +24,10 @@ button{font-family:inherit;cursor:pointer}
 #tray button.sel{background:#ffd34d;border-color:#c9a227}
 #tray button.lock{opacity:.55;filter:grayscale(1)}
 #tray button .lk{position:absolute;top:2px;right:4px;font-size:20px;filter:none}
-#tray .x{width:56px;font-size:26px;background:#ffdfe0}
+#tray .x{width:110px;font-size:18px;font-weight:900;color:#fff;background:#2fbf4f;border-color:#2fbf4f}
+body.ed #joy{bottom:calc(186px + env(safe-area-inset-bottom));width:110px;height:110px}
+body.ed #knob{left:29px;top:29px}
+body.ed #jumpB{bottom:calc(192px + env(safe-area-inset-bottom));width:88px;height:88px}
 #joy{position:fixed;left:18px;bottom:calc(84px + env(safe-area-inset-bottom));width:124px;height:124px;border-radius:50%;background:rgba(255,255,255,.3);border:3px solid rgba(255,255,255,.75);z-index:5}
 #knob{position:absolute;left:36px;top:36px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.92)}
 #jumpB{position:fixed;right:18px;bottom:calc(92px + env(safe-area-inset-bottom));width:96px;height:96px;border-radius:50%;border:0;background:#ffd34d;color:#05405e;font-weight:900;font-size:18px;box-shadow:0 6px 0 #c9a227;z-index:5}
@@ -154,7 +157,7 @@ function openCat(i){curCat=i;[...cats.children].forEach((x,j)=>x.classList.toggl
  CAT[i][1].forEach(([e,n,k,c,lv])=>{const b=document.createElement('button');const lock=lv&&!rw[lv];b.innerHTML=e+'<small>'+n+'</small>'+(lock?'<span class="lk">🔒</span>':'');if(lock)b.classList.add('lock');if(sel===k&&selC===c)b.classList.add('sel');
   b.onclick=()=>{if(lock){say(TX.locked(lv+' ('+(EN?['Beach','Jungle','Pirates','Volcano','Treasure Island']:['Plaža','Džungla','Gusari','Vulkan','Otok blaga'])[lv-1]+')'));beep(250);return}
    [...tray.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');unpick();sel=k;selC=c;mode='place';hasT=false;makeGhost(k,c);beep(660);say(TX.tapGrass);ui()};tray.appendChild(b)});
- const x=document.createElement('button');x.className='x';x.textContent='✖';x.onclick=closeTray;tray.appendChild(x);
+ const x=document.createElement('button');x.className='x';x.textContent=EN?'✔ DONE':'✔ GOTOVO';x.onclick=closeTray;tray.appendChild(x);
  tray.classList.remove('hid');ui();
  if(!flags.tip){flags.tip=1;saveAll();showTip()}}
 function closeTray(){tray.classList.add('hid');[...cats.children].forEach(x=>x.classList.remove('sel'));curCat=-1;cancel()}
@@ -171,8 +174,8 @@ function pick(o){unpick();picked=o;mode='picked';ring.visible=true;ring.material
 function unpick(){picked=null;ring.visible=false;ring.material.color.setHex(0xffffff)}
 function ui(){const p=mode==='place'||mode==='move';$('putB').classList.toggle('hid',!p);$('canB').classList.toggle('hid',mode==='walk');$('moveB').classList.toggle('hid',mode!=='picked');$('delB').classList.toggle('hid',mode!=='picked');
  $('putB').disabled=!(p&&hasT&&valid(tx,tz,mode==='move'?picked.userData.it.k:sel,mode==='move'?picked.userData.it:null));
- const ed=!tray.classList.contains('hid')||mode!=='walk';$('joy').classList.toggle('hid',ed);$('jumpB').classList.toggle('hid',ed);
- $('act').style.bottom=ed?'calc(178px + env(safe-area-inset-bottom))':'calc(84px + env(safe-area-inset-bottom))';
+ const ed=!tray.classList.contains('hid')||mode!=='walk';document.body.classList.toggle('ed',ed);
+ $('act').style.bottom=ed?'calc(312px + env(safe-area-inset-bottom))':'calc(84px + env(safe-area-inset-bottom))';
  $('undoB').classList.toggle('hid',!ed)}
 // ---- Plamenko ----
 const D=new THREE.Group();scene.add(D);
@@ -229,11 +232,11 @@ function chime(){beep(880);setTimeout(()=>beep(1175),90)}
 // ---- kretanje ----
 let vy=0,onG=true,face=0;$('jumpB').onclick=()=>{if(onG){vy=8;onG=false;beep(500)}};
 const joy=$('joy'),knob=$('knob');let jx=0,jz=0,jid=null;
-function jm(t){const r=joy.getBoundingClientRect();let dx=t.clientX-r.left-62,dy=t.clientY-r.top-62;const d=Math.hypot(dx,dy);if(d>46){dx*=46/d;dy*=46/d}knob.style.left=36+dx+'px';knob.style.top=36+dy+'px';jx=dx/46;jz=dy/46}
+function jm(t){const r=joy.getBoundingClientRect();let dx=t.clientX-r.left-r.width/2,dy=t.clientY-r.top-r.height/2;const d=Math.hypot(dx,dy);if(d>46){dx*=46/d;dy*=46/d}const c=joy.offsetWidth/2-29;knob.style.left=c+dx+'px';knob.style.top=c+dy+'px';jx=dx/46;jz=dy/46}
 joy.addEventListener('touchstart',e=>{e.preventDefault();jid=e.changedTouches[0].identifier;jm(e.changedTouches[0])},{passive:false});
 joy.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===jid)jm(t)},{passive:false});
-const jend=e=>{for(const t of e.changedTouches)if(t.identifier===jid){jid=null;jx=jz=0;knob.style.left=knob.style.top='36px'}};joy.addEventListener('touchend',jend);joy.addEventListener('touchcancel',jend);
-let md=false;joy.addEventListener('mousedown',e=>{md=true;jm(e)});addEventListener('mousemove',e=>{if(md)jm(e)});addEventListener('mouseup',()=>{if(md){md=false;jx=jz=0;knob.style.left=knob.style.top='36px'}});
+const jend=e=>{for(const t of e.changedTouches)if(t.identifier===jid){jid=null;jx=jz=0;knob.style.left=knob.style.top=(joy.offsetWidth/2-26-3)+'px'}};joy.addEventListener('touchend',jend);joy.addEventListener('touchcancel',jend);
+let md=false;joy.addEventListener('mousedown',e=>{md=true;jm(e)});addEventListener('mousemove',e=>{if(md)jm(e)});addEventListener('mouseup',()=>{if(md){md=false;jx=jz=0;knob.style.left=knob.style.top=(joy.offsetWidth/2-26-3)+'px'}});
 const keys={};addEventListener('keydown',e=>{keys[e.code]=1;if(e.code==='Space')$('jumpB').onclick();if(e.code==='Enter')$('putB').onclick()});addEventListener('keyup',e=>keys[e.code]=0);
 addEventListener('resize',()=>{R.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()});
 let last=performance.now(),tt=0;const camP=new THREE.Vector3(0,5,15),tmp=new THREE.Vector3();
