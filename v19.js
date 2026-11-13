@@ -1,4 +1,4 @@
-/* Stjepanov otok avanture 2.0 - v33: jedna povezana avantura (5 razina redom), 3 zivota, spremanje, pauza */
+/* Stjepanov otok avanture 2.0 - v34: jedna povezana avantura (5 razina redom), 3 zivota, spremanje, pauza */
 (function(){
 var PAGES=['./','dzungla.html','gusari.html','vulkan.html','otok.html'];
 var f=location.pathname.split('/').pop();
@@ -48,7 +48,7 @@ function victory(){
 }
 var st=document.createElement('style');
 st.textContent='@keyframes v24c{to{transform:translateY(110vh) rotate(720deg)}}@keyframes v19f{from{opacity:1}to{opacity:0}}@keyframes v19h{0%{transform:scale(.3)}60%{transform:scale(1.2)}100%{transform:scale(1)}}@keyframes v19s{0%,100%{transform:none}25%{transform:translateX(-8px) scale(1.3)}75%{transform:translateX(8px) scale(1.3)}}'
-+'#lvls,#resetB,#novaIgraB,#gemH,#win button,#over button{display:none!important}#start button.small[onclick*="location"]{display:none!important}#start button.v32{display:inline-block!important}'
++'html body #lvls,#resetB,#novaIgraB,#gemH,#win button,#over button{display:none!important}#start button.small[onclick*="location"]{display:none!important}#start button.v32{display:inline-block!important}'
 +(LVL>1?'button[onclick="SAP.prikazi()"]{display:none!important}':'');
 document.head.appendChild(st);
 function mk(id,html,css,fn){var b=document.createElement('button');b.id=id;b.className='big v32';b.innerHTML=html;if(css)b.style.cssText=css;b.onclick=fn;return b}
@@ -70,10 +70,10 @@ document.addEventListener('DOMContentLoaded',function(){
    pb.addEventListener('click',function(e){if(adv()>1){e.stopImmediatePropagation();e.preventDefault();location.href=PAGES[adv()-1]+'?start=1'}},true)}
   var box=document.createElement('div');box.style.margin='8px 0';
   if(a>1||hasSave)box.appendChild(mk('v32new','\ud83d\udd04 '+(E?'NEW ADVENTURE':'NOVA AVANTURA'),'font-size:18px;padding:10px 18px;background:#ff7a59;color:#fff;box-shadow:0 6px 0 #b8492f',function(){if(confirm(E?'Start a new adventure from level 1? (Castle stays.)':'Nova avantura od 1. razine? Dvorac i nagrade ostaju.')){V19.newAdventure()}}));
-  box.appendChild(mk('v32castle','\ud83c\udff0 '+(E?'MY CASTLE':'MOJ DVORAC'),'font-size:18px;padding:10px 18px;background:#b388ff;color:#fff;box-shadow:0 6px 0 #7a52c7',function(){location.href='dvorac.html?v=33'}));
+  box.appendChild(mk('v32castle','\ud83c\udff0 '+(E?'MY CASTLE':'MOJ DVORAC'),'font-size:18px;padding:10px 18px;background:#b388ff;color:#fff;box-shadow:0 6px 0 #7a52c7',function(){location.href='dvorac.html?v=34'}));
   if(pb&&pb.parentNode)pb.parentNode.insertBefore(box,pb.nextSibling);
   if(ls.getItem('sa_victory')){var d=document.createElement('div');d.style.cssText='margin:6px auto;font-size:18px;font-weight:900;color:#ffd34d;text-shadow:0 2px 0 #05405e';d.textContent=E?'\ud83c\udfc6 YOU WON THE WHOLE ISLAND! \ud83c\udfdd\ufe0f':'\ud83c\udfc6 OSVOJIO SI CIJELI OTOK! \ud83c\udfdd\ufe0f';if(pb&&pb.parentNode)pb.parentNode.insertBefore(d,pb)}
-  if(start){var v=document.createElement('div');v.style.cssText='font-size:12px;opacity:.6;margin-top:6px';v.textContent='v33';start.appendChild(v)}
+  if(start){var v=document.createElement('div');v.style.cssText='font-size:12px;opacity:.6;margin-top:6px';v.textContent='v34';start.appendChild(v)}
   if(/start=1/.test(Q)&&adv()===1)setTimeout(function(){pb&&pb.click()},400);
  }else if(start&&pb){
   /* pauza na razinama 2-5: NASTAVI ili sigurni IZLAZ u glavni izbornik (napredak je spremljen) */

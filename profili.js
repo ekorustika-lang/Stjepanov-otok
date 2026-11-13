@@ -1,7 +1,8 @@
+/* v34: sa_wipe je zajednicki kljuc - vise se ne brise napredak pri svakom ucitavanju stranice */
 /* Profili igrača – svaki igrač ima svoj napredak */
 (function(){
 var S=Storage.prototype,G=S.getItem,SET=S.setItem,R=S.removeItem,ls=window.localStorage;
-var SHARED={sa_lang:1,sa_mus:1};
+var SHARED={sa_lang:1,sa_mus:1,sa_wipe:1};
 function raw(k){return G.call(ls,k)}
 function profs(){try{return JSON.parse(raw('sa_profs'))||[]}catch(e){return[]}}
 function saveProfs(p){SET.call(ls,'sa_profs',JSON.stringify(p))}
