@@ -23,8 +23,8 @@ var SAP=window.SAP={
  novi:function(){var n=prompt('Kako se zove novi igrač?');if(!n)return;n=n.trim().slice(0,14);if(!n)return;var id=String(Date.now());P.push({id:id,ime:n});saveProfs(P);SAP.izaberi(id)},
  obrisi:function(id){var p=P.filter(function(p){return p.id===id})[0];if(!p||P.length<2)return;if(!confirm('Obrisati igrača '+p.ime+' i sav njegov napredak?'))return;
    Object.keys(ls).forEach(function(k){if(k.indexOf('sa_p'+id+'_')===0)R.call(ls,k)});P=P.filter(function(x){return x.id!==id});saveProfs(P);if(id===cur)SET.call(ls,'sa_pcur',P[0].id);SAP.prikazi()},
- reset:function(){if(!confirm('Nova igra za igrača '+ime()+'? Njegov napredak bit će obrisan i kreće od Razine 1. Ostali igrači ostaju kakvi jesu.'))return;
-   Object.keys(ls).forEach(function(k){if(k.indexOf('sa_p'+cur+'_')===0)R.call(ls,k)});alert('Napredak igrača '+ime()+' je obrisan.');location.reload()},
+ reset:function(){if(!confirm('Nova igra za igrača '+ime()+'? Njegov napredak u avanturi bit će obrisan (dvorac i nagrade ostaju) i kreće od Razine 1. Ostali igrači ostaju kakvi jesu.'))return;
+   Object.keys(ls).forEach(function(k){if(k.indexOf('sa_p'+cur+'_')!==0)return;if(/_castle$/.test(k))return;if(/_best[1-5]$/.test(k)){try{var rk='sa_p'+cur+'_rewards_castle',r=JSON.parse(G.call(ls,rk))||{};r[k.slice(-1)]=1;SET.call(ls,rk,JSON.stringify(r))}catch(e){}}R.call(ls,k)});alert('Napredak igrača '+ime()+' je obrisan.');location.reload()},
  zatvori:function(){var o=document.getElementById('saProf');if(o)o.remove();try{sessionStorage.setItem('sa_izabran','1')}catch(e){}},
  prikazi:function(){SAP.zatvori();var o=document.createElement('div');o.id='saProf';
   o.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(5,64,94,.85);display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif';

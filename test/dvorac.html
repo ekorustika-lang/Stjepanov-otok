@@ -4,45 +4,92 @@
 <title>Stjepanov otok – Moj dvorac</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;overflow:hidden;background:#7fd3ff;font-family:system-ui,sans-serif;touch-action:none;user-select:none}
+html,body{margin:0;height:100%;overflow:hidden;background:#7fd3ff;font-family:system-ui,sans-serif;touch-action:none;user-select:none;-webkit-user-select:none}
 canvas{display:block}
-#top{position:fixed;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;gap:6px;z-index:5}
-.pill{background:rgba(255,255,255,.9);border-radius:14px;padding:8px 12px;font-weight:800;color:#05405e;border:0;font-size:15px}
-#hint{position:fixed;top:56px;left:10px;right:10px;text-align:center;z-index:5;pointer-events:none}
-#hint span{background:rgba(5,64,94,.75);color:#fff;font-weight:700;font-size:14px;border-radius:12px;padding:5px 10px;display:inline-block}
-#panel{position:fixed;left:6px;right:96px;bottom:150px;z-index:5;background:rgba(255,255,255,.85);border-radius:18px;padding:6px}
-#tabs{display:flex;gap:4px;margin-bottom:6px}
-#tabs button{flex:1;font-size:13px;font-weight:800;border:0;border-radius:12px;padding:7px 2px;background:#e3f2fb;color:#05405e}
-#tabs button.sel{background:#ff8fc0;color:#fff}
-#bar{display:flex;gap:6px;overflow-x:auto}
-#bar button{flex:0 0 auto;min-width:64px;font-size:26px;border-radius:14px;border:3px solid #fff;background:#fff;padding:4px 4px 2px;line-height:1}
-#bar button small{display:block;font-size:10px;font-weight:700;color:#05405e;margin-top:2px}
-#bar button.sel{background:#ffd34d;border-color:#c9a227}
+button{font-family:inherit;cursor:pointer}
+.hid{display:none!important}
+#top{position:fixed;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;gap:6px;z-index:6}
+.pill{background:rgba(255,255,255,.94);border-radius:16px;padding:8px 12px;font-weight:900;color:#05405e;border:0;font-size:15px;min-height:48px;box-shadow:0 3px 0 rgba(0,0,0,.15)}
 #saveB{background:#3fcf5a;color:#fff}
-#joy{position:fixed;left:20px;bottom:20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.3);border:3px solid rgba(255,255,255,.7);z-index:5}
-#knob{position:absolute;left:35px;top:35px;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.9)}
-.act{position:fixed;right:18px;border-radius:50%;border:0;font-weight:900;color:#05405e;z-index:5}
-#putB{bottom:20px;width:96px;height:96px;background:#3fcf5a;font-size:16px;box-shadow:0 6px 0 #1d8a32}
-#jumpB{bottom:130px;width:70px;height:70px;background:#ffd34d;font-size:15px;box-shadow:0 5px 0 #c9a227}
-#undoB{bottom:26px;right:126px;width:76px;height:66px;border-radius:18px;background:#ff9a8a;font-size:13px}
-#msg{position:fixed;top:96px;left:0;right:0;text-align:center;font-weight:900;color:#fff;text-shadow:0 2px 4px #0008;font-size:20px;z-index:5;pointer-events:none}
+#msg{position:fixed;top:66px;left:10px;right:10px;text-align:center;z-index:5;pointer-events:none}
+#msg span{display:inline-block;background:rgba(255,255,255,.95);color:#05405e;font-weight:900;font-size:18px;border-radius:18px;padding:8px 14px;box-shadow:0 3px 8px #0003;max-width:92vw}
+#msg span:empty{display:none}
+#cats{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;gap:6px;padding:6px 6px calc(6px + env(safe-area-inset-bottom));background:rgba(255,255,255,.88)}
+#cats button{flex:1;border:0;border-radius:14px;background:#e3f2fb;color:#05405e;font-weight:900;font-size:13px;padding:4px 2px;min-height:58px;line-height:1.1}
+#cats button b{display:block;font-size:26px}
+#cats button.sel{background:#ff8fc0;color:#fff}
+#tray{position:fixed;left:0;right:0;bottom:calc(70px + env(safe-area-inset-bottom));z-index:6;display:flex;gap:8px;overflow-x:auto;padding:8px;background:rgba(255,255,255,.78)}
+#tray button{flex:0 0 auto;width:84px;min-height:84px;border:3px solid #fff;border-radius:16px;background:#fff;font-size:36px;line-height:1;padding:4px;position:relative}
+#tray button small{display:block;font-size:12px;font-weight:800;color:#05405e;margin-top:4px}
+#tray button.sel{background:#ffd34d;border-color:#c9a227}
+#tray button.lock{opacity:.55;filter:grayscale(1)}
+#tray button .lk{position:absolute;top:2px;right:4px;font-size:20px;filter:none}
+#tray .x{width:56px;font-size:26px;background:#ffdfe0}
+#joy{position:fixed;left:18px;bottom:calc(84px + env(safe-area-inset-bottom));width:124px;height:124px;border-radius:50%;background:rgba(255,255,255,.3);border:3px solid rgba(255,255,255,.75);z-index:5}
+#knob{position:absolute;left:36px;top:36px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.92)}
+#jumpB{position:fixed;right:18px;bottom:calc(92px + env(safe-area-inset-bottom));width:96px;height:96px;border-radius:50%;border:0;background:#ffd34d;color:#05405e;font-weight:900;font-size:18px;box-shadow:0 6px 0 #c9a227;z-index:5}
+#act{position:fixed;left:0;right:0;bottom:calc(178px + env(safe-area-inset-bottom));z-index:7;display:flex;justify-content:center;gap:10px;pointer-events:none}
+#act button{pointer-events:auto;border:0;border-radius:18px;font-weight:900;font-size:18px;padding:12px 16px;min-height:60px;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+#putB{background:#2fbf4f;font-size:22px!important;padding:12px 28px!important}
+#putB:disabled{background:#9aa;box-shadow:none}
+#undoB{background:#ff9a5a}
+#moveB{background:#2a8bd6}
+#delB{background:#e74c3c}
+#canB{background:#8a9aa6}
+#over{position:fixed;inset:0;z-index:20;background:rgba(5,64,94,.82);display:flex;align-items:center;justify-content:center}
+#over .box{background:#fff8e1;border-radius:22px;padding:20px;max-width:360px;width:90%;text-align:center;color:#05405e}
+#over h2{margin:0 0 10px;font-size:24px}
+#over p{font-size:17px;font-weight:700;margin:8px 0;text-align:left}
+#over button{display:block;width:100%;margin-top:10px;border:0;border-radius:16px;font-size:19px;font-weight:900;padding:14px;background:#ffd34d;color:#05405e}
+#over button.red{background:#ffdfe0;color:#c0392b;font-size:15px}
+#big{position:fixed;inset:0;z-index:15;display:flex;align-items:center;justify-content:center;pointer-events:none}
+#big div{background:linear-gradient(135deg,#ffd34d,#ff8fc0);color:#fff;text-shadow:0 2px 4px #0006;font-weight:900;font-size:26px;text-align:center;border-radius:24px;padding:22px;max-width:88vw;animation:pop 3.5s ease forwards}
+@keyframes pop{0%{transform:scale(.2);opacity:0}12%{transform:scale(1.1);opacity:1}20%{transform:scale(1)}85%{opacity:1}100%{opacity:0;transform:scale(1)}}
+.cf{position:fixed;top:-20px;width:12px;height:16px;z-index:14;pointer-events:none;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@media (min-width:700px){#tray{justify-content:center}#cats{left:50%;right:auto;transform:translateX(-50%);width:600px;border-radius:18px 18px 0 0}}
 </style>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png">
 </head><body>
-<div id="top"><button class="pill" id="backB">← IZBORNIK</button><span class="pill">🏰 MOJ DVORAC</span><button class="pill" id="saveB">✔ SPREMI</button></div>
-<div id="hint"><span>Odaberi ukras pa dodirni gdje ga želiš postaviti.</span></div>
-<div id="msg">Hodaj i ukrašavaj svoj dvorac! 🎉</div>
-<div id="panel"><div id="tabs"></div><div id="bar"></div></div>
+<div id="top"><button class="pill" id="menuB">☰ IZBORNIK</button><button class="pill" id="titleB">🏰 MOJ DVORAC</button><button class="pill" id="saveB">💾 SPREMI</button></div>
+<div id="msg"><span></span></div>
+<div id="tray" class="hid"></div>
+<div id="cats"></div>
 <div id="joy"><div id="knob"></div></div>
-<button class="act" id="jumpB">SKOK</button>
-<button class="act" id="putB">POSTAVI</button>
-<button class="act" id="undoB">↩<br>PONIŠTI</button>
+<button id="jumpB">SKOK</button>
+<div id="act"><button id="undoB">↩ PONIŠTI</button><button id="putB" class="hid">✔ POSTAVI</button><button id="moveB" class="hid">✋ PREMJESTI</button><button id="delB" class="hid">🗑 OBRIŠI</button><button id="canB" class="hid">✖</button></div>
+<div id="big"></div>
+<div id="over" class="hid"><div class="box" id="obox"></div></div>
 <script type="module">
 import * as THREE from 'three';
-const ls=localStorage;
-if(!ls.getItem('sa_castle')&&!ls.getItem('sa_best5')){location.replace('./?locked=5');}
-const $=id=>document.getElementById(id);
+const ls=localStorage,$=id=>document.getElementById(id);
+const EN=ls.getItem('sa_lang')==='en';
+const TX=EN?{menu:'☰ MENU',title:'🏰 MY CASTLE',save:'💾 SAVE',jump:'JUMP',put:'✔ PLACE',undo:'↩ UNDO',move:'✋ MOVE',del:'🗑 DELETE',cats:['Flowers','Trees','Decor','Rewards'],
+ welcome:'Walk around and decorate your castle! 🎉',tapGrass:'Now tap the grass where you want it 👆',bad:'Can\'t go there – pick a free spot on the grass',sea:'That\'s the sea! 🌊',placed:'Placed! ✨',moved:'Moved! ✨',deleted:'Removed',saved:'Castle saved! ✔',undone:'Undone',nothing:'Nothing to undo',full:'Your castle is full of decorations! 😄',
+ picked:'What do you want to do with it?',moveTap:'Tap the grass where it should go',locked:n=>'🔒 Finish level '+n+' to win this!',newRw:n=>'You won a new reward: '+n+'! 🎁 Look in REWARDS.',
+ tip:'<h2>🏰 How to decorate</h2><p>1️⃣ Pick a category at the bottom and choose an item.</p><p>2️⃣ Tap the grass where you want it.</p><p>3️⃣ Press the big green <b>PLACE</b> button.</p><p>👆 Tap an item already placed to <b>MOVE</b> or <b>DELETE</b> it.</p>',ok:'GOT IT! 👍',
+ mTitle:'☰ Menu',mCont:'▶ CONTINUE',mMain:'🏝️ MAIN MENU (levels)',mReset:'🧹 RESET CASTLE',rc1:'Remove ALL decorations from your castle?\n\nYour rewards and adventure levels stay as they are.',rc2:'Are you sure? This cannot be undone.',rcDone:'Castle is empty again. Start building! 🏗️',
+ five:'Great job, Stjepan! 5 decorations! 🎉',ten:'BRAVO, STJEPAN! YOUR CASTLE IS GETTING MORE BEAUTIFUL!',
+ dr:['Hi, Stjepan!','What a beautiful castle!','Shall we plant some flowers?','Bravo, you are a real builder!','Let\'s go on a new adventure!']}
+:{menu:'☰ IZBORNIK',title:'🏰 MOJ DVORAC',save:'💾 SPREMI',jump:'SKOK',put:'✔ POSTAVI',undo:'↩ PONIŠTI',move:'✋ PREMJESTI',del:'🗑 OBRIŠI',cats:['Cvijeće','Drveće','Ukrasi','Nagrade'],
+ welcome:'Hodaj i ukrašavaj svoj dvorac! 🎉',tapGrass:'Sada dodirni travu gdje ga želiš 👆',bad:'Tu ne može – odaberi slobodno mjesto na travi',sea:'Tu je more! 🌊',placed:'Postavljeno! ✨',moved:'Premješteno! ✨',deleted:'Maknuto',saved:'Dvorac je spremljen! ✔',undone:'Poništeno',nothing:'Nema se što poništiti',full:'Dvorac je pun ukrasa! 😄',
+ picked:'Što želiš s ovim ukrasom?',moveTap:'Dodirni travu gdje ga želiš premjestiti',locked:n=>'🔒 Završi razinu '+n+' i osvoji ovo!',newRw:n=>'Osvojio si novu nagradu: '+n+'! 🎁 Pogledaj u NAGRADE.',
+ tip:'<h2>🏰 Kako ukrašavati</h2><p>1️⃣ Dolje odaberi kategoriju pa predmet.</p><p>2️⃣ Dodirni travu gdje ga želiš.</p><p>3️⃣ Pritisni veliki zeleni gumb <b>POSTAVI</b>.</p><p>👆 Dodirni već postavljeni ukras da ga <b>PREMJESTIŠ</b> ili <b>OBRIŠEŠ</b>.</p>',ok:'RAZUMIJEM! 👍',
+ mTitle:'☰ Izbornik',mCont:'▶ NASTAVI',mMain:'🏝️ GLAVNI IZBORNIK (razine)',mReset:'🧹 RESETIRAJ DVORAC',rc1:'Maknuti SVE ukrase iz dvorca?\n\nNagrade i avanturističke razine ostaju kakve jesu.',rc2:'Jesi li siguran? Ovo se ne može vratiti.',rcDone:'Dvorac je opet prazan. Kreni graditi! 🏗️',
+ five:'Bravo, Stjepane! Već 5 ukrasa! 🎉',ten:'BRAVO, STJEPANE! TVOJ DVORAC POSTAJE SVE LJEPŠI!',
+ dr:['Bok, Stjepane!','Kako je lijep tvoj dvorac!','Hoćemo posaditi cvijeće?','Bravo, pravi si graditelj!','Idemo u novu avanturu!']};
+$('menuB').textContent=TX.menu;$('titleB').textContent=TX.title;$('saveB').textContent=TX.save;$('jumpB').textContent=TX.jump;$('putB').textContent=TX.put;$('undoB').textContent=TX.undo;$('moveB').textContent=TX.move;$('delB').textContent=TX.del;document.documentElement.lang=EN?'en':'hr';
+const K_IT='sa_dvorac_castle',K_RW='sa_rewards_castle',K_FL='sa_flags_castle';
+const J=(k,d)=>{try{const v=JSON.parse(ls.getItem(k));return v==null?d:v}catch(e){return d}};
+if(ls.getItem(K_IT)===null&&ls.getItem('sa_dvorac')!==null){ls.setItem(K_IT,ls.getItem('sa_dvorac'))}
+let items=J(K_IT,[]);if(!Array.isArray(items))items=[];
+const flags=J(K_FL,{});const rw=J(K_RW,{});
+const RWD=[[1,'royalflag','🚩',EN?'Royal flag':'Kraljevska zastava'],[2,'magictree','🌳',EN?'Magic tree':'Čarobno drvo'],[3,'fountain','⛲',EN?'Fountain':'Fontana'],[4,'statue','🗽',EN?'Golden statue':'Zlatni kip'],[5,'bigcrown','👑',EN?'Royal crown':'Kraljevska kruna']];
+const newly=[];flags.seen=flags.seen||[];
+for(const [n,,,name] of RWD){if(ls.getItem('sa_best'+n))rw[n]=1;if(rw[n]&&!flags.seen.includes(n)){newly.push(name);flags.seen.push(n)}}
+function saveAll(){ls.setItem(K_IT,JSON.stringify(items));ls.setItem(K_RW,JSON.stringify(rw));ls.setItem(K_FL,JSON.stringify(flags))}
+saveAll();
 const R=new THREE.WebGLRenderer({antialias:true});R.setPixelRatio(Math.min(2,devicePixelRatio));R.setSize(innerWidth,innerHeight);R.shadowMap.enabled=true;document.body.prepend(R.domElement);
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x7fd3ff);scene.fog=new THREE.Fog(0x7fd3ff,40,90);
 const cam=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,200);
@@ -65,8 +112,6 @@ box(.9,1,.6,0x2f80ed,0,1.1,0,P);box(.8,.7,.3,0x8b5a2b,0,1.15,-.45,P);sph(.42,0xf
 cyl(.75,.75,.08,0xd9a441,0,2.25,0,P,12);cyl(.35,.42,.35,0xd9a441,0,2.42,0,P,10);
 const lg1=box(.32,.6,.32,0x5b4a2e,-.22,.3,0,P),lg2=box(.32,.6,.32,0x5b4a2e,.22,.3,0,P);
 P.position.set(0,0,8);
-const KINDS=[['🚩','flag'],['🌸','flower'],['🔥','torch'],['🌴','palm'],['🎁','chest'],['🐰','bunny'],['🌳','tree'],['⭐','star']];
-const rc=a=>a[Math.floor(Math.random()*a.length)];
 function make(k,col){const g=new THREE.Group();
  if(k==='flag'){cyl(.07,.07,3,0xeeeeee,0,1.5,0,g);box(1.2,.7,.05,col,.6,2.6,0,g)}
  else if(k==='flower'){cyl(.05,.05,.6,0x2e9e3e,0,.3,0,g);for(let i=0;i<5;i++){const a=i*1.256;sph(.17,col,Math.cos(a)*.2,.65,Math.sin(a)*.2,g)}sph(.13,0xfff3b0,0,.67,0,g)}
@@ -84,55 +129,114 @@ function make(k,col){const g=new THREE.Group();
  else if(k==='fountain'){cyl(1,1.1,.5,0xcfd8dc,0,.25,0,g,16);cyl(.85,.85,.1,0x4dc3ff,0,.5,0,g,16);cyl(.12,.12,1,0xcfd8dc,0,.9,0,g);g.userData.spin=sph(.25,0x7fd8ff,0,1.5,0,g)}
  else if(k==='crown'){cyl(.5,.5,.4,0xffd700,0,.6,0,g,10);for(let i=0;i<5;i++){const a=i*1.256;const c=new THREE.Mesh(new THREE.ConeGeometry(.12,.35,5),M(0xffd700));c.position.set(Math.cos(a)*.42,.95,Math.sin(a)*.42);g.add(c);sph(.07,0xff2f6d,Math.cos(a)*.5,.6,Math.sin(a)*.5,g)}}
  else if(k==='star'){const s=new THREE.Mesh(new THREE.OctahedronGeometry(.5),new THREE.MeshBasicMaterial({color:0xffd700}));s.position.y=1.4;g.add(s);g.userData.spin=s}
+ else if(k==='bench'){box(1.8,.12,.6,0xb5733a,0,.55,0,g);box(1.8,.5,.1,0xb5733a,0,.85,-.27,g);[-.75,.75].forEach(x=>box(.12,.55,.5,0x555555,x,.27,0,g))}
+ else if(k==='royalflag'){cyl(.09,.09,4.2,0xffd700,0,2.1,0,g);box(1.6,1,.06,0x7b2cff,.8,3.6,0,g);sph(.18,0xffd700,0,4.3,0,g);const c=new THREE.Mesh(new THREE.OctahedronGeometry(.25),M(0xffd700));c.position.set(.8,3.6,.06);g.add(c)}
+ else if(k==='magictree'){cyl(.25,.35,1.6,0x8b5a2b,0,.8,0,g);const cs=[0xff7fd6,0x9b6bff,0x5fd3ff];cs.forEach((c,i)=>sph(.9-i*.15,c,Math.cos(i*2.1)*.5,2.2+i*.35,Math.sin(i*2.1)*.5,g));const s=new THREE.Mesh(new THREE.OctahedronGeometry(.25),new THREE.MeshBasicMaterial({color:0xfff27a}));s.position.y=3.6;g.add(s);g.userData.spin=s}
+ else if(k==='statue'){box(1.2,.6,1.2,0xcfd8dc,0,.3,0,g);const G=0xffcc33;box(.5,.9,.35,G,0,1.15,0,g);sph(.28,G,0,1.85,0,g);box(.15,.7,.15,G,.35,1.6,0,g).rotation.z=-.5;const st=new THREE.Mesh(new THREE.OctahedronGeometry(.2),new THREE.MeshBasicMaterial({color:0xfff27a}));st.position.set(.6,2.05,0);g.add(st);g.userData.spin=st}
+ else if(k==='bigcrown'){box(1.4,.5,1.4,0xcfd8dc,0,.25,0,g);cyl(.8,.8,.6,0xffd700,0,.9,0,g,12);for(let i=0;i<6;i++){const a=i*1.047;const c=new THREE.Mesh(new THREE.ConeGeometry(.18,.55,5),M(0xffd700));c.position.set(Math.cos(a)*.68,1.45,Math.sin(a)*.68);g.add(c);sph(.11,[0xff2f6d,0x2fa8ff,0x3fcf5a][i%3],Math.cos(a)*.81,.9,Math.sin(a)*.81,g)}g.userData.bob=1}
  scene.add(g);return g}
-const COLS={flag:[0xff4d6d,0x4dabff,0xffd34d,0x9b59ff],flower:[0xff5fa2,0xffd34d,0xb36bff,0xff7a3d]};
-let items=[];try{items=JSON.parse(ls.getItem('sa_dvorac'))||[]}catch(e){items=[]}
+const RAD={tree:1.1,palm:1,pine:1,magictree:1.2,fountain:1.2,bench:1,bigcrown:.9,statue:.8,chest:.7,bush:.8};
+const rad=k=>RAD[k]||.55;
+const CAT=[['🌸',[['🌸',EN?'Pink':'Ružičasto','flower',0xff5fa2],['🌻',EN?'Sunflower':'Suncokret','sunflower'],['🌷',EN?'Tulip':'Tulipan','tulip',0xff3b5c],['🪻',EN?'Lavender':'Lavanda','lavender'],['🌼',EN?'Yellow':'Žuto','flower',0xffd34d]]],
+['🌳',[['🌳',EN?'Tree':'Drvo','tree'],['🌴',EN?'Palm':'Palma','palm'],['🌲',EN?'Pine':'Bor','pine'],['🌿',EN?'Bush':'Grm','bush']]],
+['🏡',[['🪑',EN?'Bench':'Klupa','bench'],['🏮',EN?'Lamp':'Svjetiljka','lantern'],['🔥',EN?'Torch':'Baklja','torch'],['🚩',EN?'Flag':'Zastava','flag',0xff4d6d],['🎁',EN?'Chest':'Škrinja','chest'],['🐰',EN?'Bunny':'Zečić','bunny'],['⭐',EN?'Star':'Zvijezda','star']]],
+['🎁',RWD.map(([n,k,e,name])=>[e,name,k,undefined,n])]];
 const objs=[];
-function place(it){const o=make(it.k,it.c);o.position.set(it.x,0,it.z);o.rotation.y=it.r||0;objs.push(o)}
+function place(it){const o=make(it.k,it.c);o.position.set(it.x,0,it.z);o.rotation.y=it.r||0;o.userData.it=it;objs.push(o);return o}
+function rebuild(){objs.forEach(o=>scene.remove(o));objs.length=0;items.forEach(place)}
 items.forEach(place);
-function save(){ls.setItem('sa_dvorac',JSON.stringify(items))}
-const CAT=[['🌸 Cvijeće',[['🌸','Ružičasto','flower',0xff5fa2],['🌻','Suncokret','sunflower'],['🌷','Tulipan','tulip',0xff3b5c],['🪷','Lavanda','lavender'],['🌼','Žuto','flower',0xffd34d]]],
-['🌳 Drveće',[['🌳','Drvo','tree'],['🌴','Palma','palm'],['🌲','Bor','pine'],['🌿','Grm','bush']]],
-['🏮 Ukras',[['🚩','Zastava','flag',0xff4d6d],['🔥','Baklja','torch'],['🏮','Lampion','lantern'],['⛲','Fontana','fountain']]],
-['🎁 Nagrade',[['🎁','Škrinja','chest'],['⭐','Zvijezda','star'],['👑','Kruna','crown'],['🐰','Zečić','bunny']]]];
-let sel='flower',selC=0xff5fa2;const bar=$('bar'),tabs=$('tabs');
-function showTab(i){[...tabs.children].forEach((x,j)=>x.classList.toggle('sel',j===i));bar.innerHTML='';
- CAT[i][1].forEach(([e,n,k,c])=>{const b=document.createElement('button');b.innerHTML=e+'<small>'+n+'</small>';
-  b.onclick=ev=>{ev.stopPropagation();sel=k;selC=c;[...bar.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');beep(660);makeGhost()};
-  if(k===sel&&c===selC)b.classList.add('sel');bar.appendChild(b)})}
-CAT.forEach((t,i)=>{const b=document.createElement('button');b.textContent=t[0];b.onclick=ev=>{ev.stopPropagation();showTab(i);beep(520)};tabs.appendChild(b)});
-{const cb=document.createElement('button');cb.textContent='🧹';cb.style.flex='0 0 40px';cb.id='clrB';tabs.appendChild(cb)}
-showTab(0);
-const ring=new THREE.Mesh(new THREE.RingGeometry(.8,1.05,28),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;scene.add(ring);
-const arrow=new THREE.Mesh(new THREE.ConeGeometry(.35,.7,4),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9}));arrow.rotation.x=Math.PI;scene.add(arrow);
-let ghost=null,tx=0,tz=5,tapped=false;
-function makeGhost(){if(ghost)scene.remove(ghost);ghost=make(sel,selC);ghost.traverse(o=>{if(o.material){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.45;o.castShadow=false}})}
-makeGhost();
+let mode='walk',sel=null,selC,curCat=-1,picked=null,tx=0,tz=0,hasT=false,ghost=null;const hist=[];
+function snap(){hist.push(JSON.stringify(items));if(hist.length>40)hist.shift()}
+function say(t,ms){const s=$('msg').firstChild;s.textContent=t;clearTimeout(say.t);say.t=setTimeout(()=>s.textContent='',ms||3000)}
+const cats=$('cats'),tray=$('tray');
+CAT.forEach((c,i)=>{const b=document.createElement('button');b.innerHTML='<b>'+c[0]+'</b>'+TX.cats[i];b.onclick=()=>{beep(520);curCat===i&&!tray.classList.contains('hid')?closeTray():openCat(i)};cats.appendChild(b)});
+function openCat(i){curCat=i;[...cats.children].forEach((x,j)=>x.classList.toggle('sel',j===i));tray.innerHTML='';
+ CAT[i][1].forEach(([e,n,k,c,lv])=>{const b=document.createElement('button');const lock=lv&&!rw[lv];b.innerHTML=e+'<small>'+n+'</small>'+(lock?'<span class="lk">🔒</span>':'');if(lock)b.classList.add('lock');if(sel===k&&selC===c)b.classList.add('sel');
+  b.onclick=()=>{if(lock){say(TX.locked(lv+' ('+(EN?['Beach','Jungle','Pirates','Volcano','Treasure Island']:['Plaža','Džungla','Gusari','Vulkan','Otok blaga'])[lv-1]+')'));beep(250);return}
+   [...tray.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');unpick();sel=k;selC=c;mode='place';hasT=false;makeGhost(k,c);beep(660);say(TX.tapGrass);ui()};tray.appendChild(b)});
+ const x=document.createElement('button');x.className='x';x.textContent='✖';x.onclick=closeTray;tray.appendChild(x);
+ tray.classList.remove('hid');ui();
+ if(!flags.tip){flags.tip=1;saveAll();showTip()}}
+function closeTray(){tray.classList.add('hid');[...cats.children].forEach(x=>x.classList.remove('sel'));curCat=-1;cancel()}
+function cancel(){sel=null;mode='walk';hasT=false;unpick();if(ghost){scene.remove(ghost);ghost=null}[...tray.children].forEach(x=>x.classList.remove('sel'));ui()}
+function makeGhost(k,c){if(ghost)scene.remove(ghost);ghost=make(k,c);ghost.traverse(o=>{if(o.material){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.5;o.castShadow=false}});ghost.visible=false}
+function tint(ok){ghost&&ghost.traverse(o=>{if(o.material&&o.material.emissive!==undefined){o.material.emissive.setHex(ok?0x000000:0xaa0000)}})}
+const ring=new THREE.Mesh(new THREE.RingGeometry(.8,1.05,28),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;ring.visible=false;scene.add(ring);
+function valid(x,z,k,skip){if(Math.hypot(x,z)>29.5)return false;const r=rad(k);
+ for(const w of W){if(Math.abs(x-w.x)<w.w+r&&Math.abs(z-w.z)<w.d+r)return false}
+ if(Math.abs(x)<2.4+r&&z>-14&&z<-12.6)return false; // vrata
+ for(const it of items){if(it===skip)continue;if(Math.hypot(it.x-x,it.z-z)<rad(it.k)+r-.1)return false}
+ return true}
+function pick(o){unpick();picked=o;mode='picked';ring.visible=true;ring.material.color.setHex(0xffd34d);ring.position.set(o.position.x,.06,o.position.z);ring.scale.setScalar(rad(o.userData.it.k)+.3);say(TX.picked);beep(700);ui()}
+function unpick(){picked=null;ring.visible=false;ring.material.color.setHex(0xffffff)}
+function ui(){const p=mode==='place'||mode==='move';$('putB').classList.toggle('hid',!p);$('canB').classList.toggle('hid',mode==='walk');$('moveB').classList.toggle('hid',mode!=='picked');$('delB').classList.toggle('hid',mode!=='picked');
+ $('putB').disabled=!(p&&hasT&&valid(tx,tz,mode==='move'?picked.userData.it.k:sel,mode==='move'?picked.userData.it:null));
+ const ed=!tray.classList.contains('hid')||mode!=='walk';$('joy').classList.toggle('hid',ed);$('jumpB').classList.toggle('hid',ed);
+ $('act').style.bottom=ed?'calc(178px + env(safe-area-inset-bottom))':'calc(84px + env(safe-area-inset-bottom))';
+ $('undoB').classList.toggle('hid',!ed)}
+// ---- Plamenko ----
+const D=new THREE.Group();scene.add(D);
+const DR=0xff6a3d,DB=0xffd27a;
+sph(.75,DR,0,0,0,D).scale.set(1,.9,1.25);sph(.5,DB,0,-.15,.45,D);
+const hd=sph(.55,DR,0,.75,.85,D);sph(.3,DB,0,.6,1.3,D);
+[-.22,.22].forEach(x=>{sph(.13,0xffffff,x,.95,1.27,D);sph(.07,0x111111,x,.95,1.38,D);cone(.1,.35,0xffe08a,x,1.35,.75,D)});
+const tl=cone(.22,1.2,DR,0,-.1,-1.2,D);tl.rotation.x=-Math.PI/2;
+const wings=[-1,1].map(s=>{const p=new THREE.Group();p.position.set(s*.55,.35,0);D.add(p);const w=box(1.3,.06,.8,0xffa53d,s*.65,0,0,p);return p});
+D.scale.setScalar(.9);
+const dragonHit=[];D.traverse(o=>{if(o.isMesh)dragonHit.push(o)});
+let dState='fly',dT=0,dAng=0,nextVisit=12,lastLine=-1;const dPos=new THREE.Vector3(14,7,0);
+let hrVoice=null;function pickVoice(){const v=speechSynthesis.getVoices();hrVoice=v.find(x=>/^hr/i.test(x.lang))||(EN?v.find(x=>/^en/i.test(x.lang)):null)||null}
+try{pickVoice();speechSynthesis.onvoiceschanged=pickVoice}catch(e){}
+function dragonSay(t){say('🐉 Plamenko: '+t,3500);try{if(hrVoice){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.voice=hrVoice;u.lang=hrVoice.lang;u.rate=1;u.pitch=1.4;speechSynthesis.speak(u)}}catch(e){}}
+function dragonLine(){let i;do{i=Math.floor(Math.random()*TX.dr.length)}while(i===lastLine&&TX.dr.length>1);lastLine=i;dragonSay(TX.dr[i])}
+function visit(){dState='visit';dT=0}
+// ---- dodir ----
 const ray=new THREE.Raycaster(),gp=new THREE.Plane(new THREE.Vector3(0,1,0),0),hit=new THREE.Vector3();
 R.domElement.addEventListener('pointerdown',e=>{ray.setFromCamera(new THREE.Vector2(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1),cam);
- if(ray.ray.intersectPlane(gp,hit)){if(Math.hypot(hit.x,hit.z)>30){say('Tu je more! 🌊');return}tx=hit.x;tz=hit.z;tapped=true;beep(740)}});
+ if(ray.intersectObjects(dragonHit,false).length){dragonLine();beep(900);visit();return}
+ if(mode==='place'||mode==='move'){if(!ray.ray.intersectPlane(gp,hit))return;if(Math.hypot(hit.x,hit.z)>30){say(TX.sea);return}
+  tx=hit.x;tz=hit.z;hasT=true;ghost.visible=true;const k=mode==='move'?picked.userData.it.k:sel;const ok=valid(tx,tz,k,mode==='move'?picked.userData.it:null);tint(ok);if(!ok)say(TX.bad);beep(ok?740:300);ui();return}
+ const meshes=[];objs.forEach(o=>o.traverse(m=>{if(m.isMesh){m.userData.root=o;meshes.push(m)}}));
+ const h=ray.intersectObjects(meshes,false);if(h.length){pick(h[0].object.userData.root);return}
+ if(mode==='picked')cancel()});
+$('putB').onclick=()=>{if($('putB').disabled)return;
+ if(mode==='move'){const it=picked.userData.it;snap();it.x=+tx.toFixed(2);it.z=+tz.toFixed(2);picked.position.set(it.x,0,it.z);saveAll();scene.remove(ghost);ghost=null;mode='walk';unpick();hasT=false;say(TX.moved);chime();ui();return}
+ if(items.length>=150){say(TX.full);return}
+ snap();const it={k:sel,x:+tx.toFixed(2),z:+tz.toFixed(2),r:+(Math.random()*6.28).toFixed(2)};if(selC)it.c=selC;items.push(it);place(it);saveAll();hasT=false;ghost.visible=false;say(TX.placed);chime();ui();milestones()};
+$('moveB').onclick=()=>{if(!picked)return;mode='move';hasT=false;makeGhost(picked.userData.it.k,picked.userData.it.c);say(TX.moveTap);beep(600);ui()};
+$('delB').onclick=()=>{if(!picked)return;snap();const it=picked.userData.it;items=items.filter(x=>x!==it);scene.remove(picked);objs.splice(objs.indexOf(picked),1);unpick();mode='walk';saveAll();say(TX.deleted);beep(330);ui()};
+$('canB').onclick=()=>{beep(400);if(mode==='move'&&ghost){scene.remove(ghost);ghost=null}if(mode==='picked'||mode==='move'){unpick();mode=sel?'place':'walk';if(sel)makeGhost(sel,selC)}else cancel();ui()};
+$('undoB').onclick=()=>{if(!hist.length){say(TX.nothing);return}items=JSON.parse(hist.pop());rebuild();unpick();if(mode==='picked'||mode==='move'){mode='walk';if(ghost){scene.remove(ghost);ghost=null}}saveAll();say(TX.undone);beep(330);ui()};
+$('saveB').onclick=()=>{saveAll();chime();say(TX.saved)};
+$('titleB').onclick=()=>{if(tray.classList.contains('hid'))openCat(curCat<0?0:curCat);else closeTray()};
+// ---- iznenađenja ----
+function confetti(n){const C=['#ff5fa2','#ffd34d','#3fcf5a','#2a8bd6','#ff7a3d','#b36bff'];for(let i=0;i<n;i++){const d=document.createElement('div');d.className='cf';d.style.left=Math.random()*100+'vw';d.style.background=C[i%6];d.style.animationDuration=(1.8+Math.random()*1.6)+'s';d.style.animationDelay=Math.random()*.6+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),4200)}}
+function big(t){$('big').innerHTML='<div>'+t+'</div>';setTimeout(()=>$('big').innerHTML='',3600)}
+function milestones(){flags.cnt=(flags.cnt||0)+1;
+ if(items.length>=5&&!flags.m5){flags.m5=1;confetti(60);dragonSay(TX.five);visit()}
+ if(items.length>=10&&!flags.m10){flags.m10=1;confetti(140);big(TX.ten);visit();[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f),i*140))}
+ saveAll()}
+// ---- izbornik ----
+function overlay(h){$('obox').innerHTML=h;$('over').classList.remove('hid')}
+function closeOv(){$('over').classList.add('hid')}
+function showTip(){overlay(TX.tip+'<button id="okB">'+TX.ok+'</button>');$('okB').onclick=()=>{closeOv();beep(660)}}
+$('menuB').onclick=()=>{overlay('<h2>'+TX.mTitle+'</h2><button id="m1">'+TX.mCont+'</button><button id="m2">'+TX.mMain+'</button><button id="m3" class="red">'+TX.mReset+'</button>');
+ $('m1').onclick=closeOv;$('m2').onclick=()=>{saveAll();location.href='./'};
+ $('m3').onclick=()=>{if(!confirm(TX.rc1))return;if(!confirm(TX.rc2))return;items=[];hist.length=0;flags.m5=flags.m10=0;flags.cnt=0;rebuild();cancel();saveAll();closeOv();say(TX.rcDone)}};
+// ---- zvuk ----
 let AC=null;function beep(f){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.type='triangle';g.gain.setValueAtTime(.12,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.25);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+.3)}catch(e){}}
-function say(t){$('msg').textContent=t;clearTimeout(say.t);say.t=setTimeout(()=>$('msg').textContent='',2500)}
-setTimeout(()=>say(''),3500);
-let face=0;
-$('putB').onclick=()=>{if(items.length>=150){say('Dvorac je pun ukrasa! 😄');return}
- const x=tx,z=tz;
- if(Math.hypot(x,z)>30){say('Tu je more! 🌊');return}
- const it={k:sel,x:+x.toFixed(2),z:+z.toFixed(2),r:+(Math.random()*6.28).toFixed(2)};if(selC)it.c=selC;
- items.push(it);place(it);save();tapped=false;beep(880);setTimeout(()=>beep(1175),90);say('Postavljeno! ✨')};
-$('saveB').onclick=()=>{save();beep(880);setTimeout(()=>beep(1320),110);say('Dvorac je spremljen! ✔')};
-$('undoB').onclick=()=>{if(!items.length)return;items.pop();scene.remove(objs.pop());save();beep(330)};
-$('clrB').onclick=()=>{if(!items.length||!confirm('Maknuti sve ukrase iz dvorca?'))return;items=[];objs.forEach(o=>scene.remove(o));objs.length=0;save()};
-$('backB').onclick=()=>location.href='./';
-let vy=0,onG=true;$('jumpB').onclick=()=>{if(onG){vy=8;onG=false;beep(500)}};
+function chime(){beep(880);setTimeout(()=>beep(1175),90)}
+// ---- kretanje ----
+let vy=0,onG=true,face=0;$('jumpB').onclick=()=>{if(onG){vy=8;onG=false;beep(500)}};
 const joy=$('joy'),knob=$('knob');let jx=0,jz=0,jid=null;
-function jm(t){const r=joy.getBoundingClientRect();let dx=t.clientX-r.left-60,dy=t.clientY-r.top-60;const d=Math.hypot(dx,dy);if(d>45){dx*=45/d;dy*=45/d}knob.style.left=35+dx+'px';knob.style.top=35+dy+'px';jx=dx/45;jz=dy/45}
+function jm(t){const r=joy.getBoundingClientRect();let dx=t.clientX-r.left-62,dy=t.clientY-r.top-62;const d=Math.hypot(dx,dy);if(d>46){dx*=46/d;dy*=46/d}knob.style.left=36+dx+'px';knob.style.top=36+dy+'px';jx=dx/46;jz=dy/46}
 joy.addEventListener('touchstart',e=>{e.preventDefault();jid=e.changedTouches[0].identifier;jm(e.changedTouches[0])},{passive:false});
 joy.addEventListener('touchmove',e=>{e.preventDefault();for(const t of e.changedTouches)if(t.identifier===jid)jm(t)},{passive:false});
-const jend=e=>{for(const t of e.changedTouches)if(t.identifier===jid){jid=null;jx=jz=0;knob.style.left=knob.style.top='35px'}};joy.addEventListener('touchend',jend);joy.addEventListener('touchcancel',jend);
+const jend=e=>{for(const t of e.changedTouches)if(t.identifier===jid){jid=null;jx=jz=0;knob.style.left=knob.style.top='36px'}};joy.addEventListener('touchend',jend);joy.addEventListener('touchcancel',jend);
+let md=false;joy.addEventListener('mousedown',e=>{md=true;jm(e)});addEventListener('mousemove',e=>{if(md)jm(e)});addEventListener('mouseup',()=>{if(md){md=false;jx=jz=0;knob.style.left=knob.style.top='36px'}});
 const keys={};addEventListener('keydown',e=>{keys[e.code]=1;if(e.code==='Space')$('jumpB').onclick();if(e.code==='Enter')$('putB').onclick()});addEventListener('keyup',e=>keys[e.code]=0);
 addEventListener('resize',()=>{R.setSize(innerWidth,innerHeight);cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix()});
-let last=performance.now(),tt=0;const camP=new THREE.Vector3(0,5,15);
+let last=performance.now(),tt=0;const camP=new THREE.Vector3(0,5,15),tmp=new THREE.Vector3();
 function frame(n){requestAnimationFrame(frame);const dt=Math.min(.05,(n-last)/1000);last=n;tt+=dt;
  let mx=jx,mz=jz;if(keys.KeyA||keys.ArrowLeft)mx=-1;if(keys.KeyD||keys.ArrowRight)mx=1;if(keys.KeyW||keys.ArrowUp)mz=-1;if(keys.KeyS||keys.ArrowDown)mz=1;
  const m=Math.min(1,Math.hypot(mx,mz));
@@ -142,10 +246,20 @@ function frame(n){requestAnimationFrame(frame);const dt=Math.min(.05,(n-last)/10
   const d=Math.hypot(nx,nz);if(d>30.5){nx*=30.5/d;nz*=30.5/d}
   P.position.x=nx;P.position.z=nz;P.rotation.y=face;lg1.rotation.x=Math.sin(tt*12)*.6;lg2.rotation.x=-lg1.rotation.x}else{lg1.rotation.x=lg2.rotation.x=0}
  vy-=22*dt;P.position.y+=vy*dt;if(P.position.y<=0){P.position.y=0;vy=0;onG=true}
- objs.forEach(o=>{if(o.userData.flame)o.userData.flame.scale.setScalar(1+Math.sin(tt*15+o.position.x)*.15);if(o.userData.spin)o.userData.spin.rotation.y+=dt*2;if(o.userData.hop!==undefined)o.position.y=Math.abs(Math.sin(tt*3+o.userData.hop))*.4});
- if(!tapped){tx=P.position.x+Math.sin(face)*2.2;tz=P.position.z+Math.cos(face)*2.2}
- ring.position.set(tx,.05,tz);ring.scale.setScalar(1+Math.sin(tt*5)*.08);arrow.position.set(tx,3.4+Math.sin(tt*5)*.25,tz);if(ghost){ghost.position.set(tx,0,tz);ghost.rotation.y+=dt*.6}
+ objs.forEach(o=>{const u=o.userData;if(u.flame)u.flame.scale.setScalar(1+Math.sin(tt*15+o.position.x)*.15);if(u.spin)u.spin.rotation.y+=dt*2;if(u.hop!==undefined)o.position.y=Math.abs(Math.sin(tt*3+u.hop))*.4;if(u.bob)o.position.y=Math.sin(tt*2)*.08+.05});
+ if(ghost&&ghost.visible){ghost.position.set(tx,0,tz);ghost.rotation.y+=dt*.6}
+ if(picked)ring.scale.setScalar((rad(picked.userData.it.k)+.3)*(1+Math.sin(tt*6)*.06));
+ // Plamenko
+ dT+=dt;wings.forEach((w,i)=>w.rotation.z=(i?-1:1)*Math.sin(tt*10)*.6);
+ if(dState==='fly'){dAng+=dt*.25;tmp.set(Math.cos(dAng)*16,7+Math.sin(tt*1.5)*.6,-7+Math.sin(dAng)*16);if(dT>nextVisit)visit()}
+ else{tmp.set(P.position.x+1.8,P.position.y+2.4+Math.sin(tt*3)*.2,P.position.z+.6);
+  if(dT>1.6&&!D.userData.said){D.userData.said=1;if(!/Plamenko/.test($('msg').firstChild.textContent))dragonLine()}
+  if(dT>7){dState='fly';dT=0;D.userData.said=0;nextVisit=25+Math.random()*20}}
+ const pv=D.position.clone();D.position.lerp(tmp,dState==='fly'?.03:.05);const dv=D.position.clone().sub(pv);if(dv.lengthSq()>1e-6)D.rotation.y=Math.atan2(dv.x,dv.z);else D.rotation.y=Math.atan2(cam.position.x-D.position.x,cam.position.z-D.position.z);
  camP.lerp(new THREE.Vector3(P.position.x,P.position.y+5,P.position.z+8),.08);cam.position.copy(camP);cam.lookAt(P.position.x,P.position.y+1.2,P.position.z);
  R.render(scene,cam)}
+D.position.copy(dPos);
+ui();say(TX.welcome,3500);
+setTimeout(()=>{if(newly.length){confetti(50);dragonSay(TX.newRw(newly.join(', ')));visit();D.userData.said=1}},1200);
 requestAnimationFrame(frame);
 </script></body></html>
