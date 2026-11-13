@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded',function(){
   c.innerHTML='<button class="big" id="v19cont" style="background:#3fcf5a;color:#063;box-shadow:0 8px 0 #1d8a32">▶ '+(en()?'CONTINUE GAME':'NASTAVI IGRU')+'</button>';
   l.parentNode.insertBefore(c,l);
   document.getElementById('v19cont').onclick=function(){var n=Math.min(+ls.getItem('sa_last')||1,unlocked());if(n<=1){var p=document.getElementById('playB');p&&p.click()}else location.href=PAGES[n-1]+'?start=1'};
-  var v=document.createElement('div');v.style.cssText='font-size:12px;opacity:.6;margin-top:6px';v.textContent='v26';l.parentNode.appendChild(v);
+  var v=document.createElement('div');v.style.cssText='font-size:12px;opacity:.6;margin-top:6px';v.textContent='v27';l.parentNode.appendChild(v);
   var m=Q.match(/locked=(\d)/);
   if(m){var t=el('<div style="background:#fff8e1;border-radius:16px;padding:14px 20px;font-weight:800;color:#05405e">🔒 '+(en()?'That level is still locked! Finish the previous level first.':'Ta razina je još zaključana! Prvo završi prethodnu razinu.')+'</div>','position:fixed;top:20px;left:0;right:0;z-index:99997;display:flex;justify-content:center;font-family:system-ui,sans-serif');setTimeout(function(){t.remove()},3500)}
   if(/start=1/.test(Q))setTimeout(function(){var p=document.getElementById('playB');p&&p.click()},400);

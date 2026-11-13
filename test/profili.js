@@ -39,6 +39,5 @@ document.addEventListener('DOMContentLoaded',function(){
  if(l){var b=document.createElement('div');b.style.margin='8px 0';b.innerHTML='<button class="small" onclick="SAP.prikazi()" style="font-weight:800;background:#7fd3ff;color:#05405e">👤 Igrač: '+esc(ime())+' (promijeni)</button>';l.parentNode.insertBefore(b,l)}
  var n=document.getElementById('novaIgraB');if(n){n.setAttribute('onclick','SAP.reset()');n.innerHTML='🔄 NOVA IGRA za '+esc(ime())}
  var s=null;try{s=sessionStorage.getItem('sa_izabran')}catch(e){}
- if(!s&&l)SAP.prikazi();
 });
 })();
