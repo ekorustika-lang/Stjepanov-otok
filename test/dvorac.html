@@ -8,27 +8,36 @@ html,body{margin:0;height:100%;overflow:hidden;background:#7fd3ff;font-family:sy
 canvas{display:block}
 #top{position:fixed;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;gap:6px;z-index:5}
 .pill{background:rgba(255,255,255,.9);border-radius:14px;padding:8px 12px;font-weight:800;color:#05405e;border:0;font-size:15px}
-#bar{position:fixed;left:0;right:0;bottom:150px;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;z-index:5;padding:0 100px 0 6px}
-#bar button{font-size:26px;width:50px;height:50px;border-radius:14px;border:3px solid #fff;background:rgba(255,255,255,.75)}
+#hint{position:fixed;top:56px;left:10px;right:10px;text-align:center;z-index:5;pointer-events:none}
+#hint span{background:rgba(5,64,94,.75);color:#fff;font-weight:700;font-size:14px;border-radius:12px;padding:5px 10px;display:inline-block}
+#panel{position:fixed;left:6px;right:96px;bottom:150px;z-index:5;background:rgba(255,255,255,.85);border-radius:18px;padding:6px}
+#tabs{display:flex;gap:4px;margin-bottom:6px}
+#tabs button{flex:1;font-size:13px;font-weight:800;border:0;border-radius:12px;padding:7px 2px;background:#e3f2fb;color:#05405e}
+#tabs button.sel{background:#ff8fc0;color:#fff}
+#bar{display:flex;gap:6px;overflow-x:auto}
+#bar button{flex:0 0 auto;min-width:64px;font-size:26px;border-radius:14px;border:3px solid #fff;background:#fff;padding:4px 4px 2px;line-height:1}
+#bar button small{display:block;font-size:10px;font-weight:700;color:#05405e;margin-top:2px}
 #bar button.sel{background:#ffd34d;border-color:#c9a227}
+#saveB{background:#3fcf5a;color:#fff}
 #joy{position:fixed;left:20px;bottom:20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.3);border:3px solid rgba(255,255,255,.7);z-index:5}
 #knob{position:absolute;left:35px;top:35px;width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,.9)}
 .act{position:fixed;right:18px;border-radius:50%;border:0;font-weight:900;color:#05405e;z-index:5}
 #putB{bottom:20px;width:96px;height:96px;background:#3fcf5a;font-size:16px;box-shadow:0 6px 0 #1d8a32}
 #jumpB{bottom:130px;width:70px;height:70px;background:#ffd34d;font-size:15px;box-shadow:0 5px 0 #c9a227}
-#undoB{bottom:30px;right:126px;width:60px;height:60px;background:#ff9a8a;font-size:24px}
-#msg{position:fixed;top:60px;left:0;right:0;text-align:center;font-weight:900;color:#fff;text-shadow:0 2px 4px #0008;font-size:20px;z-index:5;pointer-events:none}
+#undoB{bottom:26px;right:126px;width:76px;height:66px;border-radius:18px;background:#ff9a8a;font-size:13px}
+#msg{position:fixed;top:96px;left:0;right:0;text-align:center;font-weight:900;color:#fff;text-shadow:0 2px 4px #0008;font-size:20px;z-index:5;pointer-events:none}
 </style>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png">
 </head><body>
-<div id="top"><button class="pill" id="backB">⬅ IZBORNIK</button><span class="pill">🏰 MOJ DVORAC</span><button class="pill" id="clrB">🧹</button></div>
+<div id="top"><button class="pill" id="backB">← IZBORNIK</button><span class="pill">🏰 MOJ DVORAC</span><button class="pill" id="saveB">✔ SPREMI</button></div>
+<div id="hint"><span>Odaberi ukras pa dodirni gdje ga želiš postaviti.</span></div>
 <div id="msg">Hodaj i ukrašavaj svoj dvorac! 🎉</div>
-<div id="bar"></div>
+<div id="panel"><div id="tabs"></div><div id="bar"></div></div>
 <div id="joy"><div id="knob"></div></div>
 <button class="act" id="jumpB">SKOK</button>
 <button class="act" id="putB">POSTAVI</button>
-<button class="act" id="undoB">↩</button>
+<button class="act" id="undoB">↩<br>PONIŠTI</button>
 <script type="module">
 import * as THREE from 'three';
 const ls=localStorage;
@@ -66,6 +75,14 @@ function make(k,col){const g=new THREE.Group();
  else if(k==='chest'){box(1,.6,.7,0x9b5a1a,0,.3,0,g);box(1.04,.3,.74,0xc9a227,0,.72,0,g)}
  else if(k==='bunny'){sph(.35,0xffffff,0,.35,0,g);sph(.25,0xffffff,0,.75,.2,g);box(.08,.4,.1,0xffc0cb,-.1,1.05,.2,g);box(.08,.4,.1,0xffc0cb,.1,1.05,.2,g);g.userData.hop=Math.random()*6}
  else if(k==='tree'){cyl(.2,.3,1.4,0x8b5a2b,0,.7,0,g);sph(1,0x3cb55a,0,2,0,g);sph(.7,0x4ccc66,.5,2.5,.2,g)}
+ else if(k==='sunflower'){cyl(.06,.06,1.2,0x2e9e3e,0,.6,0,g);for(let i=0;i<10;i++){const a=i*.628;sph(.16,0xffd000,Math.cos(a)*.3,1.25,Math.sin(a)*.3,g)}sph(.2,0x6b3e1a,0,1.27,0,g)}
+ else if(k==='tulip'){cyl(.05,.05,.7,0x2e9e3e,0,.35,0,g);const t=new THREE.Mesh(new THREE.ConeGeometry(.2,.4,6),M(col||0xff3b5c));t.rotation.x=Math.PI;t.position.y=.85;g.add(t)}
+ else if(k==='lavender'){for(let i=0;i<5;i++){const a=i*1.256;cyl(.03,.03,.6,0x2e9e3e,Math.cos(a)*.15,.3,Math.sin(a)*.15,g);cyl(.06,.08,.35,0x9b6bff,Math.cos(a)*.15,.75,Math.sin(a)*.15,g)}}
+ else if(k==='pine'){cyl(.15,.2,.8,0x8b5a2b,0,.4,0,g);const c1=new THREE.Mesh(new THREE.ConeGeometry(1,1.6,8),M(0x1f8a4c));c1.position.y=1.5;g.add(c1);const c2=new THREE.Mesh(new THREE.ConeGeometry(.7,1.2,8),M(0x27a35a));c2.position.y=2.4;g.add(c2)}
+ else if(k==='bush'){sph(.6,0x3cb55a,0,.45,0,g);sph(.45,0x4ccc66,.45,.4,.1,g);sph(.45,0x4ccc66,-.4,.4,-.1,g)}
+ else if(k==='lantern'){cyl(.06,.06,2,0x333333,0,1,0,g);const l=new THREE.Mesh(new THREE.BoxGeometry(.4,.5,.4),new THREE.MeshBasicMaterial({color:0xffe27a}));l.position.y=2.2;g.add(l);box(.5,.08,.5,0x333333,0,2.5,0,g)}
+ else if(k==='fountain'){cyl(1,1.1,.5,0xcfd8dc,0,.25,0,g,16);cyl(.85,.85,.1,0x4dc3ff,0,.5,0,g,16);cyl(.12,.12,1,0xcfd8dc,0,.9,0,g);g.userData.spin=sph(.25,0x7fd8ff,0,1.5,0,g)}
+ else if(k==='crown'){cyl(.5,.5,.4,0xffd700,0,.6,0,g,10);for(let i=0;i<5;i++){const a=i*1.256;const c=new THREE.Mesh(new THREE.ConeGeometry(.12,.35,5),M(0xffd700));c.position.set(Math.cos(a)*.42,.95,Math.sin(a)*.42);g.add(c);sph(.07,0xff2f6d,Math.cos(a)*.5,.6,Math.sin(a)*.5,g)}}
  else if(k==='star'){const s=new THREE.Mesh(new THREE.OctahedronGeometry(.5),new THREE.MeshBasicMaterial({color:0xffd700}));s.position.y=1.4;g.add(s);g.userData.spin=s}
  scene.add(g);return g}
 const COLS={flag:[0xff4d6d,0x4dabff,0xffd34d,0x9b59ff],flower:[0xff5fa2,0xffd34d,0xb36bff,0xff7a3d]};
@@ -74,17 +91,36 @@ const objs=[];
 function place(it){const o=make(it.k,it.c);o.position.set(it.x,0,it.z);o.rotation.y=it.r||0;objs.push(o)}
 items.forEach(place);
 function save(){ls.setItem('sa_dvorac',JSON.stringify(items))}
-let sel='flag';const bar=$('bar');
-KINDS.forEach(([e,k])=>{const b=document.createElement('button');b.textContent=e;b.onclick=ev=>{ev.stopPropagation();sel=k;[...bar.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');beep(660)};if(k===sel)b.classList.add('sel');bar.appendChild(b)});
+const CAT=[['🌸 Cvijeće',[['🌸','Ružičasto','flower',0xff5fa2],['🌻','Suncokret','sunflower'],['🌷','Tulipan','tulip',0xff3b5c],['🪷','Lavanda','lavender'],['🌼','Žuto','flower',0xffd34d]]],
+['🌳 Drveće',[['🌳','Drvo','tree'],['🌴','Palma','palm'],['🌲','Bor','pine'],['🌿','Grm','bush']]],
+['🏮 Ukras',[['🚩','Zastava','flag',0xff4d6d],['🔥','Baklja','torch'],['🏮','Lampion','lantern'],['⛲','Fontana','fountain']]],
+['🎁 Nagrade',[['🎁','Škrinja','chest'],['⭐','Zvijezda','star'],['👑','Kruna','crown'],['🐰','Zečić','bunny']]]];
+let sel='flower',selC=0xff5fa2;const bar=$('bar'),tabs=$('tabs');
+function showTab(i){[...tabs.children].forEach((x,j)=>x.classList.toggle('sel',j===i));bar.innerHTML='';
+ CAT[i][1].forEach(([e,n,k,c])=>{const b=document.createElement('button');b.innerHTML=e+'<small>'+n+'</small>';
+  b.onclick=ev=>{ev.stopPropagation();sel=k;selC=c;[...bar.children].forEach(x=>x.classList.remove('sel'));b.classList.add('sel');beep(660);makeGhost()};
+  if(k===sel&&c===selC)b.classList.add('sel');bar.appendChild(b)})}
+CAT.forEach((t,i)=>{const b=document.createElement('button');b.textContent=t[0];b.onclick=ev=>{ev.stopPropagation();showTab(i);beep(520)};tabs.appendChild(b)});
+{const cb=document.createElement('button');cb.textContent='🧹';cb.style.flex='0 0 40px';cb.id='clrB';tabs.appendChild(cb)}
+showTab(0);
+const ring=new THREE.Mesh(new THREE.RingGeometry(.8,1.05,28),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9,side:THREE.DoubleSide}));ring.rotation.x=-Math.PI/2;scene.add(ring);
+const arrow=new THREE.Mesh(new THREE.ConeGeometry(.35,.7,4),new THREE.MeshBasicMaterial({color:0xffffff,transparent:true,opacity:.9}));arrow.rotation.x=Math.PI;scene.add(arrow);
+let ghost=null,tx=0,tz=5,tapped=false;
+function makeGhost(){if(ghost)scene.remove(ghost);ghost=make(sel,selC);ghost.traverse(o=>{if(o.material){o.material=o.material.clone();o.material.transparent=true;o.material.opacity=.45;o.castShadow=false}})}
+makeGhost();
+const ray=new THREE.Raycaster(),gp=new THREE.Plane(new THREE.Vector3(0,1,0),0),hit=new THREE.Vector3();
+R.domElement.addEventListener('pointerdown',e=>{ray.setFromCamera(new THREE.Vector2(e.clientX/innerWidth*2-1,-(e.clientY/innerHeight)*2+1),cam);
+ if(ray.ray.intersectPlane(gp,hit)){if(Math.hypot(hit.x,hit.z)>30){say('Tu je more! 🌊');return}tx=hit.x;tz=hit.z;tapped=true;beep(740)}});
 let AC=null;function beep(f){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const o=AC.createOscillator(),g=AC.createGain();o.frequency.value=f;o.type='triangle';g.gain.setValueAtTime(.12,AC.currentTime);g.gain.exponentialRampToValueAtTime(.001,AC.currentTime+.25);o.connect(g).connect(AC.destination);o.start();o.stop(AC.currentTime+.3)}catch(e){}}
 function say(t){$('msg').textContent=t;clearTimeout(say.t);say.t=setTimeout(()=>$('msg').textContent='',2500)}
 setTimeout(()=>say(''),3500);
 let face=0;
 $('putB').onclick=()=>{if(items.length>=150){say('Dvorac je pun ukrasa! 😄');return}
- const x=P.position.x+Math.sin(face)*1.8,z=P.position.z+Math.cos(face)*1.8;
+ const x=tx,z=tz;
  if(Math.hypot(x,z)>30){say('Tu je more! 🌊');return}
- const it={k:sel,x:+x.toFixed(2),z:+z.toFixed(2),r:+(Math.random()*6.28).toFixed(2)};if(COLS[sel])it.c=rc(COLS[sel]);
- items.push(it);place(it);save();beep(880);setTimeout(()=>beep(1175),90)};
+ const it={k:sel,x:+x.toFixed(2),z:+z.toFixed(2),r:+(Math.random()*6.28).toFixed(2)};if(selC)it.c=selC;
+ items.push(it);place(it);save();tapped=false;beep(880);setTimeout(()=>beep(1175),90);say('Postavljeno! ✨')};
+$('saveB').onclick=()=>{save();beep(880);setTimeout(()=>beep(1320),110);say('Dvorac je spremljen! ✔')};
 $('undoB').onclick=()=>{if(!items.length)return;items.pop();scene.remove(objs.pop());save();beep(330)};
 $('clrB').onclick=()=>{if(!items.length||!confirm('Maknuti sve ukrase iz dvorca?'))return;items=[];objs.forEach(o=>scene.remove(o));objs.length=0;save()};
 $('backB').onclick=()=>location.href='./';
@@ -107,6 +143,8 @@ function frame(n){requestAnimationFrame(frame);const dt=Math.min(.05,(n-last)/10
   P.position.x=nx;P.position.z=nz;P.rotation.y=face;lg1.rotation.x=Math.sin(tt*12)*.6;lg2.rotation.x=-lg1.rotation.x}else{lg1.rotation.x=lg2.rotation.x=0}
  vy-=22*dt;P.position.y+=vy*dt;if(P.position.y<=0){P.position.y=0;vy=0;onG=true}
  objs.forEach(o=>{if(o.userData.flame)o.userData.flame.scale.setScalar(1+Math.sin(tt*15+o.position.x)*.15);if(o.userData.spin)o.userData.spin.rotation.y+=dt*2;if(o.userData.hop!==undefined)o.position.y=Math.abs(Math.sin(tt*3+o.userData.hop))*.4});
+ if(!tapped){tx=P.position.x+Math.sin(face)*2.2;tz=P.position.z+Math.cos(face)*2.2}
+ ring.position.set(tx,.05,tz);ring.scale.setScalar(1+Math.sin(tt*5)*.08);arrow.position.set(tx,3.4+Math.sin(tt*5)*.25,tz);if(ghost){ghost.position.set(tx,0,tz);ghost.rotation.y+=dt*.6}
  camP.lerp(new THREE.Vector3(P.position.x,P.position.y+5,P.position.z+8),.08);cam.position.copy(camP);cam.lookAt(P.position.x,P.position.y+1.2,P.position.z);
  R.render(scene,cam)}
 requestAnimationFrame(frame);
