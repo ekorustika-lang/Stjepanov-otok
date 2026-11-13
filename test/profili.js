@@ -5,6 +5,8 @@ var SHARED={sa_lang:1,sa_mus:1};
 function raw(k){return G.call(ls,k)}
 function profs(){try{return JSON.parse(raw('sa_profs'))||[]}catch(e){return[]}}
 function saveProfs(p){SET.call(ls,'sa_profs',JSON.stringify(p))}
+// v28: jednokratno brisanje svih igraca i napretka - igra krece ispocetka
+if(raw('sa_wipe')!=='v28'){Object.keys(ls).forEach(function(k){if(k.indexOf('sa_')===0&&!SHARED[k])R.call(ls,k)});SET.call(ls,'sa_wipe','v28')}
 var P=profs();
 if(!P.length){ // prvi put: postojeći napredak ide prvom igraču
   P=[{id:'1',ime:'Igrač 1'}];saveProfs(P);SET.call(ls,'sa_pcur','1');
