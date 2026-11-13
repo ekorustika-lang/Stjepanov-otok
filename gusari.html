@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="hr"><head><meta charset="utf-8">
+<html lang="hr" translate="no" class="notranslate"><head><meta charset="utf-8"><meta name="google" content="notranslate"><script src="profili.js?v=27"></script><script src="v19.js?v=27"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stjepanov otok avanture 2.0 – Gusarska špilja</title>
 <style>
@@ -28,17 +28,19 @@ canvas{display:block}
 #err{position:fixed;inset:0;background:#fff;color:#900;padding:30px;z-index:99;font-size:18px}
 </style>
 <script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#2a8bd6"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
 </head><body>
 <div id="start" class="screen">
  <h1>STJEPANOV OTOK<br>AVANTURE 2.0</h1><h2 style='color:#fff;margin:0;text-shadow:0 3px 0 #7a1d1d'>🏴‍☠️ GUSARSKA ŠPILJA 💎</h2>
  <p id="tSub"></p>
  <button class="big" id="playB">IGRAJ</button>
  <div><button class="small" onclick="location.href='dzungla.html'">⬅ Razina 2</button><button class="small hidden" id="langB">🌐 EN</button><button class="small" id="musB2">🎵</button><button class="small hidden" id="resetB"></button></div>
-<div id="lvls" style="margin:6px 0"></div><script>(function(){let u=+localStorage.getItem('sa_unlock')||1;if(localStorage.getItem('sa_best1'))u=Math.max(u,2);if(localStorage.getItem('sa_best2'))u=Math.max(u,3);localStorage.setItem('sa_unlock',u);const L=[['./','🏖️ 1. Plaža'],['dzungla.html','🌴 2. Džungla'],['gusari.html','🏴‍☠️ 3. Gusari']];document.getElementById('lvls').innerHTML='<div style="color:#05405e;font-weight:800;font-size:18px">Odaberi razinu:</div>'+L.map((l,i)=>i<u?`<button class="small" style="font-weight:800" onclick="location.href='${l[0]}'">${l[1]}</button>`:`<button class="small" disabled style="opacity:.5">🔒 ${l[1]}</button>`).join('')})()</script>
+<div id="lvls" style="margin:6px 0"></div><script>(function(){let u=+localStorage.getItem('sa_unlock')||1;if(localStorage.getItem('sa_best1'))u=Math.max(u,2);if(localStorage.getItem('sa_best2'))u=Math.max(u,3);if(localStorage.getItem('sa_best3'))u=Math.max(u,4);if(localStorage.getItem('sa_best4'))u=Math.max(u,5);localStorage.setItem('sa_unlock',u);const L=[['./','🏖️ 1. Plaža'],['dzungla.html','🌴 2. Džungla'],['gusari.html','🏴‍☠️ 3. Gusari'],['vulkan.html','🌋 4. Vulkan']];document.getElementById('lvls').innerHTML='<div style="color:#05405e;font-weight:800;font-size:18px">Odaberi razinu:</div>'+L.map((l,i)=>i<u?`<button class="small" style="font-weight:800" onclick="location.href='${l[0]}'">${l[1]}</button>`:`<button class="small" disabled style="opacity:.5">🔒 ${l[1]}</button>`).join('')+(u>=5?'<button class="small" disabled style="opacity:.7">✨ 5. Otok blaga – uskoro!</button>':'<button class="small" disabled style="opacity:.5">🔒 5. Otok blaga</button>')})()</script>
  <p id="best" style="font-weight:700"></p>
 </div>
 <div id="over" class="screen hidden"><h1 id="oTitle"></h1><p id="oText"></p><button class="big" id="retryB"></button></div>
-<div id="win" class="screen hidden"><h1 id="wTitle"></h1><p id="wText"></p><button class="big" id="menuW" style="background:#fff;color:#05405e;box-shadow:0 8px 0 #9ab">IZBORNIK</button><button class="small" id="againB"></button></div>
+<div id="win" class="screen hidden"><h1 id="wTitle"></h1><p id="wText"></p><button class="big" id="nextB" style="background:#3fcf5a;color:#063;box-shadow:0 8px 0 #1d8a32">NASTAVI ➡</button><button class="big" id="menuW" style="background:#fff;color:#05405e;box-shadow:0 8px 0 #9ab">IZBORNIK</button><button class="small" id="againB"></button></div>
 <div id="hud" class="hidden">
  <div><span class="pill" id="coinsH">🪙 0</span><span class="pill" id="gemH">💎 0</span><span class="pill" id="scoreH">0</span><span class="pill" id="livesH">❤️❤️❤️</span></div>
  <div class="btns"><button id="musB">🎵</button><button id="menuB">☰</button></div>
@@ -211,7 +213,7 @@ function physics(dt,t){
  for(const a of ['x','z']){P.pos[a]+=P.vel[a]*dt;for(const s of act){const b=boxOf(s);if(overlap(b,P.pos)){if(P.pos.y>b.y1-.45){P.pos.y=b.y1;continue}const c=(b[a+'0']+b[a+'1'])/2;P.pos[a]=P.pos[a]<c?b[a+'0']-R-.001:b[a+'1']+R+.001;P.vel[a]=0}}}
  P.pos.y+=P.vel.y*dt;P.onGround=false;P.ground=null;
  for(const s of act){const b=boxOf(s);if(overlap(b,P.pos)){if(P.vel.y<=0&&P.pos.y-P.vel.y*dt>=b.y1-.5){P.pos.y=b.y1;P.vel.y=0;P.onGround=true;P.ground=s}else if(P.vel.y>0){P.pos.y=b.y0-H;P.vel.y=0}}}
- if(P.pos.y<-4){sfx.fall();S.lives--;persist();if(S.lives<=0){respawn();playing=false;stopMusic();showUI('over')}else{say(T[lang].fall);respawn()}hud()}
+ if(P.pos.y<-4){sfx.fall();if(!window.V19||V19.hit()){S.lives--;persist()}if(S.lives<=0){respawn();playing=false;stopMusic();if(window.V19)V19.gameOver();else showUI('over')}else{say(T[lang].fall);respawn()}hud()}
 }
 // ---------- PETLJA ----------
 let warnT=0,opening=0;
@@ -247,11 +249,11 @@ function update(dt,t){
 }
 function frame(ms){requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.033,t-lastT||.016);lastT=t;if(playing)update(dt,t);else{camera.position.set(Math.sin(t*.1)*30,18,-50+Math.cos(t*.1)*60);camera.lookAt(0,0,-55)}renderer.render(scene,camera)}
 function finish(){playing=false;stopMusic();sfx.win();const fin=score();const best=Math.max(fin,+localStorage.getItem('sa_best3')||0);localStorage.setItem('sa_best3',best);localStorage.removeItem('sa_save3');
- $('wTitle').textContent=T[lang].win;$('wText').innerHTML=T[lang].wtext(S.coins,S.gems,fin,Math.floor(S.time))+`<br>🏆 ${T[lang].best}: ${best}`;showUI('win')}
+ $('wTitle').textContent=T[lang].win;$('wText').innerHTML=T[lang].wtext(S.coins,S.gems,fin,Math.floor(S.time))+`<br>🏆 ${T[lang].best}: ${best}`;showUI('win');localStorage.setItem('sa_unlock',Math.max(4,+localStorage.getItem('sa_unlock')||1))}
 function showUI(w){$('start').classList.toggle('hidden',w!=='start');$('win').classList.toggle('hidden',w!=='win');$('over').classList.toggle('hidden',w!=='over');const g=w==='game';$('hud').classList.toggle('hidden',!g);$('help').classList.toggle('hidden',!g||isTouch);$('touch').classList.toggle('hidden',!g||!isTouch);applyLang()}
 function play(fresh){ac();opening=0;chestLid.rotation.x=0;S=(!fresh&&getSave())||newState();if(!(S.lives>0))S.lives=3;applyState();playing=true;showUI('game');startMusic();lastT=performance.now()/1000;camPos.set(P.pos.x,P.pos.y+4.3,P.pos.z+7.8)}
 $('playB').onclick=()=>play(false);if(/[?&]start=1/.test(location.search)){setTimeout(()=>{try{play(false)}catch(e){}},300)}$('resetB').onclick=()=>{localStorage.removeItem('sa_save3');play(true)};$('againB').onclick=()=>play(true);$('retryB').onclick=()=>{S.lives=3;persist();play(false)};
-$('menuW').onclick=()=>location.href='./';
+$('nextB').onclick=()=>location.href='vulkan.html?start=1';$('menuW').onclick=()=>location.href='./';
 $('menuB').onclick=()=>{playing=false;stopMusic();persist();showUI('start')};
 $('musB').onclick=$('musB2').onclick=()=>{ac();toggleMusic()};
 $('langB').onclick=()=>{lang=lang==='hr'?'en':'hr';localStorage.setItem('sa_lang',lang);applyLang()};

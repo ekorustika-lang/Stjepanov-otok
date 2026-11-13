@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="hr" translate="no" class="notranslate"><head><meta charset="utf-8"><meta name="google" content="notranslate"><script src="profili.js?v=27"></script><script src="v19.js?v=27"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stjepanov otok avanture 2.0 – Vulkanska planina</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#3ec6ff;font-family:system-ui,"Segoe UI",Roboto,sans-serif;touch-action:none;user-select:none}
+canvas{display:block}
+#hud{position:fixed;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;z-index:5}
+.pill{background:rgba(0,0,0,.45);color:#fff;padding:8px 14px;border-radius:22px;font-weight:800;font-size:20px;margin:0 5px 5px 0;display:inline-block}
+.btns{pointer-events:auto;white-space:nowrap}
+.btns button{background:rgba(0,0,0,.45);color:#fff;border:0;border-radius:28px;padding:12px 18px;font-size:26px;margin-left:6px;cursor:pointer}
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(#24b6ff,#7fe3ff 60%,#ffe08a);z-index:10;text-align:center;padding:20px}
+.screen h1{font-size:clamp(32px,7vw,64px);color:#fff;margin:0 0 6px;text-shadow:0 4px 0 #e36b00,0 8px 16px rgba(0,0,0,.3)}
+.screen p{color:#05405e;font-size:clamp(15px,3vw,20px);max-width:560px}
+.big{background:#ffb800;color:#5a2d00;border:0;border-radius:40px;font-size:clamp(28px,6vw,44px);font-weight:900;padding:16px 60px;box-shadow:0 8px 0 #c47a00;cursor:pointer;margin:14px}
+.big:active{transform:translateY(5px);box-shadow:0 3px 0 #c47a00}
+.small{background:#fff;border:0;border-radius:28px;padding:14px 22px;font-size:22px;margin:4px;cursor:pointer}
+.hidden{display:none!important}
+#joy{position:fixed;left:22px;bottom:22px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.25);border:3px solid rgba(255,255,255,.6);z-index:6}
+#knob{position:absolute;left:50px;top:50px;width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.85)}
+#jumpB,#runB{position:fixed;border-radius:50%;border:3px solid rgba(255,255,255,.7);color:#fff;font-weight:900;z-index:6}
+#jumpB{right:24px;bottom:28px;width:130px;height:130px;background:rgba(255,140,0,.85);font-size:24px}
+#runB{right:43px;bottom:178px;width:92px;height:92px;background:rgba(0,120,255,.7);font-size:18px}
+#runB.on{background:rgba(0,200,120,.85)}
+#msg{position:fixed;top:28%;left:0;right:0;text-align:center;font-size:clamp(22px,5vw,40px);font-weight:900;color:#fff;text-shadow:0 3px 8px rgba(0,0,0,.5);pointer-events:none;z-index:7;transition:opacity .4s;opacity:0}
+#help{position:fixed;bottom:8px;left:0;right:0;text-align:center;color:#fff;font-size:13px;text-shadow:0 1px 3px #000;pointer-events:none;z-index:4}
+#err{position:fixed;inset:0;background:#fff;color:#900;padding:30px;z-index:99;font-size:18px}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#2a8bd6"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<script>if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+</head><body>
+<div id="start" class="screen">
+ <h1>STJEPANOV OTOK<br>AVANTURE 2.0</h1><h2 style='color:#fff;margin:0;text-shadow:0 3px 0 #7a1d1d'>🌋 VULKANSKA PLANINA 🐉</h2>
+ <p id="tSub"></p>
+ <button class="big" id="playB">IGRAJ</button>
+ <div><button class="small" onclick="location.href='gusari.html'">⬅ Razina 3</button><button class="small hidden" id="langB">🌐 EN</button><button class="small" id="musB2">🎵</button><button class="small hidden" id="resetB"></button></div>
+<div id="lvls" style="margin:6px 0"></div><script>(function(){let u=+localStorage.getItem('sa_unlock')||1;if(localStorage.getItem('sa_best1'))u=Math.max(u,2);if(localStorage.getItem('sa_best2'))u=Math.max(u,3);if(localStorage.getItem('sa_best3'))u=Math.max(u,4);if(localStorage.getItem('sa_best4'))u=Math.max(u,5);localStorage.setItem('sa_unlock',u);const L=[['./','🏖️ 1. Plaža'],['dzungla.html','🌴 2. Džungla'],['gusari.html','🏴‍☠️ 3. Gusari'],['vulkan.html','🌋 4. Vulkan']];document.getElementById('lvls').innerHTML='<div style="color:#05405e;font-weight:800;font-size:18px">Odaberi razinu:</div>'+L.map((l,i)=>i<u?`<button class="small" style="font-weight:800" onclick="location.href='${l[0]}'">${l[1]}</button>`:`<button class="small" disabled style="opacity:.5">🔒 ${l[1]}</button>`).join('')+(u>=5?'<button class="small" style="font-weight:800" onclick="location.href=\'otok.html\'">🏰 5. Otok blaga</button>':'<button class="small" disabled style="opacity:.5">🔒 5. Otok blaga</button>')})()</script>
+ <p id="best" style="font-weight:700"></p>
+</div>
+<div id="over" class="screen hidden"><h1 id="oTitle"></h1><p id="oText"></p><button class="big" id="retryB"></button></div>
+<div id="win" class="screen hidden"><h1 id="wTitle"></h1><p id="wText"></p><button class="big" onclick="location.href='otok.html'">NASTAVI ➡</button><button class="big" id="menuW" style="background:#fff;color:#05405e;box-shadow:0 8px 0 #9ab">IZBORNIK</button><button class="small" id="againB"></button></div>
+<div id="hud" class="hidden">
+ <div><span class="pill" id="coinsH">🪙 0</span><span class="pill" id="gemH">💎 0</span><span class="pill" id="scoreH">0</span><span class="pill" id="livesH">❤️❤️❤️</span></div>
+ <div class="btns"><button id="musB">🎵</button><button id="menuB">☰</button></div>
+</div>
+<div id="msg"></div><div id="help" class="hidden"></div>
+<div id="touch" class="hidden"><div id="joy"><div id="knob"></div></div><button id="runB"></button><button id="jumpB"></button></div>
+<script>setTimeout(()=>{if(!window.__ok){const d=document.createElement('div');d.id='err';d.innerHTML='Igra se nije učitala. Provjerite internetsku vezu (3D biblioteka se učitava s interneta) i otvorite u Chromeu.<br><br>The game could not load. Check your internet connection.';document.body.appendChild(d)}},12000)</script>
+<script type="module">
+import * as THREE from 'three';
+window.__ok=1;
+const TXT={sub:'Razina 4: Vulkanska planina. Skupi 30 zlatnika i tri vatrena kristala 🔥, pritisni tri kamena prekidača 🔴 i oslobodi malog zmaja! 🐉',play:'IGRAJ',cont:'NASTAVI',reset:'Nova igra',best:'Najbolji rezultat',help:'WASD/strelice = kretanje · Shift = trčanje · Razmak = skok',jump:'SKOK',run:'TRČI',cp:'Kontrolna točka spremljena!',fall:'Ups! Natrag na kontrolnu točku',over:'Nema više života!',otext:'Ne brini, pokušaj ponovno od zadnje kontrolne točke! 😊',retry:'POKUŠAJ PONOVNO',win:'BRAVO, STJEPANE! SPASIO SI MALOG ZMAJA! 🐉',wtext:(c,g,s)=>`🎉 Plamenko kaže: „Hvala ti, Stjepane! Ti si moj najbolji prijatelj!” 🐉<br>Zlatnici: ${c}/30 · Vatreni kristali: ${g}/3<br><b>Rezultat: ${s}</b><br>🔓 Otključana je 5. razina – Otok blaga`,again:'IGRAJ PONOVNO',gem:'Vatreni kristal! 🔥',sw:'Prekidač aktiviran! 🟢',open:'Bravo! Vrata zmajeve špilje se otvaraju! 🐉✨',locked:'Vrata su zatvorena. Trebaš 3 vatrena kristala 🔥 i 3 prekidača 🔴',lang:''};const T={hr:TXT,en:TXT};
+let lang='hr';
+const $=id=>document.getElementById(id);
+const isTouch=('ontouchstart' in window)||navigator.maxTouchPoints>0;
+function getSave(){try{return JSON.parse(localStorage.getItem('sa_save4'))}catch(e){return null}}
+function applyLang(){const t=T[lang],s=getSave();$('tSub').textContent=t.sub;$('playB').textContent=s?t.cont:t.play;$('resetB').textContent=t.reset;$('resetB').classList.toggle('hidden',!s);$('langB').textContent=t.lang;$('help').textContent=t.help;$('jumpB').textContent=t.jump;$('runB').textContent=t.run;$('againB').textContent=t.again;$('retryB').textContent=t.retry;$('oTitle').textContent=t.over;$('oText').textContent=t.otext;const b=+localStorage.getItem('sa_best4')||0;$('best').textContent=b?`${t.best}: ${b}`:'';document.documentElement.lang=lang}
+let AC=null,musicOn=localStorage.getItem('sa_mus')!=='0',musTimer=null,step=0;
+function ac(){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
+function tone(f,d,type,v,t0,f2){const a=ac(),o=a.createOscillator(),g=a.createGain();o.type=type||'sine';const t=a.currentTime+(t0||0);o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(v||.1,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d+.02)}
+const sfx={coin:()=>{tone(988,.08,'square',.05);tone(1319,.15,'square',.05,.07)},jump:()=>tone(300,.2,'triangle',.12,0,700),gem:()=>[784,988,1175,1568].forEach((f,i)=>tone(f,.2,'triangle',.1,i*.07)),cp:()=>[523,659,784].forEach((f,i)=>tone(f,.25,'sine',.12,i*.1)),fall:()=>[400,300,200].forEach((f,i)=>tone(f,.2,'sawtooth',.05,i*.12)),chest:()=>{[392,523,659,784,1047].forEach((f,i)=>tone(f,.35,'triangle',.12,i*.09));tone(150,.5,'sawtooth',.05,0,90)},win:()=>[523,659,784,1047,784,1047].forEach((f,i)=>tone(f,.3,'triangle',.12,i*.15))};
+const mel=[784,659,784,1047,880,784,659,784,698,880,1047,880,784,659,587,523],bass=[131,196,175,220,147,196,131,196];
+function startMusic(){stopMusic();if(!musicOn)return;musTimer=setInterval(()=>{if(step%16!=15)tone(mel[step%16],.16,'square',.025);if(step%2==0)tone(bass[(step/2|0)%8],.4,'sine',.07);step++},175)}
+function stopMusic(){clearInterval(musTimer);musTimer=null}
+function updMusBtn(){$('musB').textContent=$('musB2').textContent=musicOn?'🎵':'🔇'}
+function toggleMusic(){musicOn=!musicOn;localStorage.setItem('sa_mus',musicOn?'1':'0');updMusBtn();if(musicOn&&playing)startMusic();else stopMusic()}
+let msgT;function say(s,ms){const m=$('msg');m.textContent=s;m.style.opacity=1;clearTimeout(msgT);msgT=setTimeout(()=>m.style.opacity=0,ms||1800)}
+// ---------- SCENA ----------
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.prepend(renderer.domElement);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x7fd0ff);scene.fog=new THREE.Fog(0xa8e0ff,55,160);
+const camera=new THREE.PerspectiveCamera(60,1,.1,400);
+scene.add(new THREE.HemisphereLight(0xffffff,0x88aa66,1.1));
+const sun=new THREE.DirectionalLight(0xfff2d0,1.8);sun.position.set(20,40,15);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);const sc=sun.shadow.camera;sc.left=-30;sc.right=30;sc.top=30;sc.bottom=-30;sc.far=100;scene.add(sun,sun.target);
+function resize(){const w=innerWidth,h=innerHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.fov=w<h?72:60;camera.updateProjectionMatrix()}addEventListener('resize',resize);resize();
+const M=c=>new THREE.MeshStandardMaterial({color:c,roughness:.8,flatShading:true});
+const mats={sand:M(0xf7d98b),grass:M(0x5ecb4a),rock:M(0x9a8f86),wood:M(0xa0662b),dark:M(0x6b4119),leaf:M(0x22a83a),trunk:M(0x8b5a2b),stone:M(0xb7aa95)};
+const water=new THREE.Mesh(new THREE.PlaneGeometry(600,600,60,60),new THREE.MeshStandardMaterial({color:0x1e8fe0,roughness:.3,metalness:.1,transparent:true,opacity:.9,flatShading:true}));water.rotation.x=-Math.PI/2;water.position.y=-1.4;scene.add(water);
+const solids=[];// {mesh,box:Box3,vel}
+function box(x,y,z,w,h,d,mat,opt={}){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);m.castShadow=m.receiveShadow=true;scene.add(m);const s={mesh:m,w,h,d,move:opt.move,base:new THREE.Vector3(x,y,z),delta:new THREE.Vector3(),active:opt.active!==false,box:new THREE.Box3()};s.box.setFromObject(m);if(!opt.deco)solids.push(s);return s}
+// ---------- VULKANSKI OTOK ----------
+mats.sand=M(0xc9a27a);mats.grass=M(0x8bd35a);mats.rock=M(0x7a6a66);mats.stone=M(0x9c8f8a);
+const lavaM=water.material;lavaM.color.set(0xff6a00);lavaM.emissive=new THREE.Color(0xff3c00);lavaM.emissiveIntensity=.9;lavaM.opacity=1;lavaM.transparent=false;
+scene.background=new THREE.Color(0xffc8a8);scene.fog=new THREE.Fog(0xffd2b0,60,260);
+function island(x,z,w,d){box(x,-1.5,z,w,3,d,mats.sand);box(x,-.1,z,w-2,.25,d-2,mats.grass,{deco:true})}
+island(0,-8,24,32);island(0,-52,24,28);island(0,-97,24,28);
+box(0,-1.5,-125,22,3,28,mats.stone);
+box(0,-.3,-27,4,.6,3,mats.rock);box(0,-.3,-31,4,.6,3,mats.rock,{move:{ax:'x',amp:2,spd:.8}});box(0,-.3,-35,4,.6,3,mats.rock);
+box(0,-.3,-69,4,.6,3,mats.rock);box(0,-.3,-74.5,4,.6,4,M(0x8a5a3a),{move:{ax:'x',amp:3,spd:.7}});box(0,-.3,-80,4,.6,3,mats.rock,{move:{ax:'x',amp:1.5,spd:.6,ph:1.5}});
+box(0,.4,-45,8,.8,1,mats.rock);box(0,.4,-90,8,.8,1,mats.rock);
+box(0,.4,-60,3,.8,1.4,mats.rock,{move:{ax:'x',amp:4,spd:.5}});
+box(6,.5,-50,2.4,1,2.4,mats.rock);box(8.5,1,-53,2.4,2,2.4,mats.rock);box(8.5,1.6,-57,3,3.2,3,mats.rock);
+const caveM=M(0x6a5a7e);
+function miniCave(x,z,sd){box(x+sd*2.5,1.5,z,1,3,5,caveM);box(x,1.5,z-2.5,6,3,1,caveM);box(x,3.2,z,6,.4,5,caveM,{deco:true})}
+miniCave(-8,-14,-1);miniCave(8,-100,1);
+const crysC=[0xff4fd8,0x4fd8ff,0x9b5bff,0x4fff9b];
+function crysDeco(x,y,z,i){const c=new THREE.Mesh(new THREE.OctahedronGeometry(.3+(i%3)*.15),new THREE.MeshStandardMaterial({color:crysC[i%4],emissive:crysC[i%4],emissiveIntensity:.6,roughness:.2}));c.scale.y=1.8;c.position.set(x,y,z);scene.add(c)}
+[[-10,.5,-15],[-10,.5,-12.5],[-7,.4,-15.8],[10,.5,-101],[10,.5,-98.5],[7,.4,-101.8]].forEach((p,i)=>crysDeco(...p,i));
+box(-10.5,5,-125,2,10,28,caveM,{deco:true});box(10.5,5,-125,2,10,28,caveM,{deco:true});box(0,5,-139,22,10,2,caveM,{deco:true});
+box(-7,3,-126,8,6,1.5,caveM);box(7,3,-126,8,6,1.5,caveM);
+box(-3.5,7.5,-126,1.2,3,1.6,caveM,{deco:true});box(3.5,7.5,-126,1.2,3,1.6,caveM,{deco:true});box(0,9.2,-126,9,1,2,caveM,{deco:true});
+const door=box(0,3,-126,6,6,1,M(0x5b4636));door.t=0;
+const doorGems=[-1.8,0,1.8].map(x=>{const c=new THREE.Mesh(new THREE.TorusGeometry(.3,.1,8,16),new THREE.MeshStandardMaterial({color:0x666666}));c.position.set(x,4.5,-125.4);scene.add(c);return c});
+for(let i=0;i<10;i++)crysDeco((i%2?1:-1)*9,.6+(i%4)*1.8,-114-i*2.3,i);
+const torches=[];
+[[-8.5,-115],[8.5,-115],[-8.5,-122],[8.5,-122],[-4,-129],[4,-129]].forEach(([x,z])=>{const st=new THREE.Mesh(new THREE.CylinderGeometry(.1,.12,1.8,6),mats.dark);st.position.set(x,.9,z);scene.add(st);const f=new THREE.Mesh(new THREE.SphereGeometry(.25,8,6),new THREE.MeshBasicMaterial({color:0xffa020}));f.position.set(x,1.95,z);scene.add(f);const l=new THREE.PointLight(0xff9a30,2,9);l.position.set(x,2.3,z);scene.add(l);torches.push({f,l})});
+// veliki vulkan s dimom
+{const v=new THREE.Mesh(new THREE.CylinderGeometry(9,38,46,9,1,true),M(0x8a5f4a));v.position.set(0,21,-185);scene.add(v);const top=new THREE.Mesh(new THREE.CircleGeometry(9,9),new THREE.MeshBasicMaterial({color:0xff7a1a}));top.rotation.x=-Math.PI/2;top.position.set(0,43.9,-185);scene.add(top);
+[[-30,-150,10],[32,-160,12],[40,-60,14],[-42,-90,16],[-38,-20,10],[36,-10,9]].forEach(([x,z,r])=>{const h=new THREE.Mesh(new THREE.ConeGeometry(r,r*1.3,7),mats.rock);h.position.set(x,r*.5,z);scene.add(h)})}
+const smoke=[];for(let i=0;i<10;i++){const s=new THREE.Mesh(new THREE.SphereGeometry(3,8,6),new THREE.MeshStandardMaterial({color:0xdddddd,transparent:true,opacity:.6,flatShading:true}));scene.add(s);smoke.push({s,ph:i/10})}
+// zmaj u kavezu
+const dragon=new THREE.Group();{const dg=M(0x4fd06a),bel=M(0xffe08a),wingM=new THREE.MeshStandardMaterial({color:0xff8a3d,side:2,flatShading:true});
+const add=(geo,m,x,y,z)=>{const o=new THREE.Mesh(geo,m);o.position.set(x,y,z);dragon.add(o);return o};
+add(new THREE.SphereGeometry(.6,12,10),dg,0,.7,0).scale.set(1,.9,1.2);add(new THREE.SphereGeometry(.4,10,8),bel,0,.6,.35);
+add(new THREE.SphereGeometry(.42,12,10),dg,0,1.45,.4);add(new THREE.SphereGeometry(.07),M(0x111111),-.15,1.55,.78);add(new THREE.SphereGeometry(.07),M(0x111111),.15,1.55,.78);
+add(new THREE.ConeGeometry(.08,.25,6),bel,-.18,1.85,.35);add(new THREE.ConeGeometry(.08,.25,6),bel,.18,1.85,.35);
+const tail=add(new THREE.ConeGeometry(.2,1,8),dg,0,.5,-.9);tail.rotation.x=-1.9;
+const wl=new THREE.Mesh(new THREE.PlaneGeometry(1.1,.7),wingM);wl.position.set(-.7,1,-.1);wl.rotation.y=.4;const wr=wl.clone();wr.position.x=.7;wr.rotation.y=-.4;dragon.add(wl,wr);dragon.userData={wl,wr}}
+dragon.position.set(0,.6,-133);dragon.rotation.y=0;scene.add(dragon);
+box(0,.3,-133,10,.6,7,mats.stone,{deco:true});
+const cage=new THREE.Group();for(let i=0;i<12;i++){const a=i/12*Math.PI*2;const b=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,3,6),mats.dark);b.position.set(Math.cos(a)*1.4,1.5,Math.sin(a)*1.4);cage.add(b)}{const r=new THREE.Mesh(new THREE.TorusGeometry(1.4,.1,6,20),mats.dark);r.rotation.x=Math.PI/2;r.position.y=3;cage.add(r)}cage.position.set(0,.6,-133);scene.add(cage);
+// kameni prekidaci
+const switches=[];
+function stoneSwitch(x,z){const g=new THREE.Group();const base=new THREE.Mesh(new THREE.CylinderGeometry(1.1,1.2,.3,10),mats.stone);base.position.y=.15;const top=new THREE.Mesh(new THREE.CylinderGeometry(.8,.8,.3,10),new THREE.MeshStandardMaterial({color:0xff5050,emissive:0x661010}));top.position.y=.4;g.add(base,top);g.position.set(x,0,z);scene.add(g);switches.push({g,top,x,z})}
+stoneSwitch(7,-18);stoneSwitch(-8,-62);stoneSwitch(-7,-104);
+// vodic (vulkanolog Vito)
+const monkeys=[];
+function monkey(x,z,msg){const g=new THREE.Group();const add=(geo,m,px,py,pz)=>{const o=new THREE.Mesh(geo,m);o.position.set(px,py,pz);g.add(o);return o};
+add(new THREE.BoxGeometry(.3,.65,.3),M(0x335533),-.2,.33,0);add(new THREE.BoxGeometry(.3,.65,.3),M(0x335533),.2,.33,0);
+add(new THREE.BoxGeometry(.85,.85,.5),M(0xff9800),0,1.05,0);add(new THREE.SphereGeometry(.34,12,10),M(0xffc79a),0,1.75,0);
+add(new THREE.SphereGeometry(.05),M(0x111111),.12,1.82,.3);add(new THREE.SphereGeometry(.05),M(0x111111),-.12,1.82,.3);
+add(new THREE.SphereGeometry(.36,12,8,0,Math.PI*2,0,Math.PI/2),M(0xffeb3b),0,1.9,0);
+const arm=add(new THREE.BoxGeometry(.18,.7,.18),M(0xffc79a),.55,1.2,0);
+const bc=document.createElement('canvas');bc.width=128;bc.height=128;const x2=bc.getContext('2d');x2.fillStyle='#fff';x2.beginPath();x2.arc(64,58,52,0,7);x2.fill();x2.font='64px sans-serif';x2.textAlign='center';x2.textBaseline='middle';x2.fillText('\u{1F4AC}',64,60);
+const bub=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(bc)}));bub.position.y=3;g.add(bub);
+g.position.set(x,0,z);g.traverse(o=>o.castShadow=true);scene.add(g);monkeys.push({g,arm,bub,msg,cd:0})}
+monkey(-4,-2,'Bok, Stjepane! Ja sam Vito \u{1F30B} Mali zmaj je zarobljen u špilji! Skupi 3 vatrena kristala \u{1F525} i pritisni 3 kamena prekidača \u{1F534}. Prvi kristal je u maloj špilji lijevo!');
+monkey(-4,-42,'Kristal je gore na planinskoj stazi desno, a prekidač lijevo! Pazi na kamen koji se pomiče! \u{1FAA8}');
+monkey(-4,-86,'Zadnji kristal je u špilji desno, a prekidač lijevo. Onda idi do zmajeve špilje! \u{1F409}');
+monkey(-5,-116,'Vrata zmajeve špilje otvaraju se kad imaš 3 kristala i 3 pritisnuta prekidača!');
+// ---------- PREDMETI ----------
+const coinGeo=new THREE.CylinderGeometry(.4,.4,.1,16),coinMat=new THREE.MeshStandardMaterial({color:0xffcc00,metalness:.7,roughness:.25,emissive:0x664400});
+const items=[];
+function coin(x,y,z){const m=new THREE.Mesh(coinGeo,coinMat);m.rotation.x=Math.PI/2;m.position.set(x,y,z);scene.add(m);items.push({m,type:'coin',id:items.length,y})}
+function fireCrystal(x,y,z){const g=new THREE.Group();const fm=new THREE.MeshStandardMaterial({color:0xff3d1a,emissive:0xff5a00,emissiveIntensity:.9,roughness:.2,flatShading:true});const c=new THREE.Mesh(new THREE.OctahedronGeometry(.5),fm);c.scale.y=1.6;const glow=new THREE.Mesh(new THREE.SphereGeometry(1.1,16,12),new THREE.MeshBasicMaterial({color:0xffb070,transparent:true,opacity:.25}));g.add(c,glow,new THREE.PointLight(0xff7a20,2.5,8));g.userData.glow=glow;g.position.set(x,y,z);scene.add(g);items.push({m:g,type:'key',id:items.length,y})}
+[[0,1,-2],[0,1,-5],[0,1,-8],[-6,1,-12],[7,1,-14],[4,1,-20],[0,1,-22],
+ [0,1,-27],[0,1,-35],
+ [0,1,-41],[0,2,-45],[6,1.7,-50],[8.5,2.7,-53],[-7,1,-55],[5,1,-63],[0,1,-64],
+ [0,1,-69],[0,1,-80],
+ [0,1,-86],[0,2,-90],[4,1,-95],[8,1,-99],[-4,1,-100],[-7,1,-107],[0,1,-109],
+ [0,1,-114],[0,1,-117],[0,1,-120],[-4,1,-118],[4,1,-118]].forEach(p=>coin(...p));
+fireCrystal(-8,1.3,-14.5);fireCrystal(8.5,4.4,-57);fireCrystal(8,1.3,-100.5);
+const movers=solids.filter(s=>s.move);
+const totalCoins=items.filter(i=>i.type=='coin').length;
+const cps=[new THREE.Vector3(0,0,4),new THREE.Vector3(0,0,-40),new THREE.Vector3(0,0,-85),new THREE.Vector3(0,0,-114)];
+const cpFlags=cps.map((p,i)=>{if(!i)return null;const g=new THREE.Group();const st=new THREE.Mesh(new THREE.CylinderGeometry(.08,.08,2.4),M(0xeeeeee));st.position.y=1.2;const f=new THREE.Mesh(new THREE.PlaneGeometry(.9,.6),new THREE.MeshStandardMaterial({color:0x999999,side:2}));f.position.set(.45,2.1,0);g.add(st,f);g.position.set(p.x+3,0,p.z);scene.add(g);return f});
+// ---------- STJEPAN ----------
+const hero=new THREE.Group();scene.add(hero);
+const skin=M(0xffc79a),shirt=M(0x2f8cff),pants=M(0x3b3b6b),bag=M(0xc0742a),hatM=M(0xf2b134);
+const body=new THREE.Mesh(new THREE.BoxGeometry(.7,.75,.45),shirt);body.position.y=1.05;
+const head=new THREE.Mesh(new THREE.SphereGeometry(.33,16,12),skin);head.position.y=1.72;
+const hat=new THREE.Mesh(new THREE.CylinderGeometry(.5,.5,.06,16),hatM);hat.position.y=1.98;const hatTop=new THREE.Mesh(new THREE.CylinderGeometry(.27,.3,.25,16),hatM);hatTop.position.y=2.1;
+const eyeM=M(0x222222);const e1=new THREE.Mesh(new THREE.SphereGeometry(.05),eyeM),e2=e1.clone();e1.position.set(-.12,1.76,-.3);e2.position.set(.12,1.76,-.3);
+const pack=new THREE.Mesh(new THREE.BoxGeometry(.55,.6,.3),bag);pack.position.set(0,1.1,.36);
+function limb(mat,x,y,h){const p=new THREE.Group();p.position.set(x,y,0);const m=new THREE.Mesh(new THREE.BoxGeometry(.22,h,.22),mat);m.position.y=-h/2;p.add(m);hero.add(p);return p}
+const legL=limb(pants,-.18,.68,.68),legR=limb(pants,.18,.68,.68),armL=limb(skin,-.47,1.38,.62),armR=limb(skin,.47,1.38,.62);
+hero.add(body,head,hat,hatTop,e1,e2,pack);hero.traverse(o=>o.castShadow=true);
+const shadowBlob=new THREE.Mesh(new THREE.CircleGeometry(.45,16),new THREE.MeshBasicMaterial({color:0,transparent:true,opacity:.25}));shadowBlob.rotation.x=-Math.PI/2;scene.add(shadowBlob);
+// ---------- UPRAVLJANJE ----------
+const keys={};let jumpQ=false,touchRun=false;const joy={x:0,y:0};
+addEventListener('keydown',e=>{keys[e.code]=true;if(e.code==='Space'){jumpQ=true;e.preventDefault()}if(e.code==='KeyM')toggleMusic()});
+addEventListener('keyup',e=>keys[e.code]=false);
+const joyEl=$('joy'),knob=$('knob');let joyId=null;
+function joyMove(t){const r=joyEl.getBoundingClientRect();let dx=t.clientX-(r.left+r.width/2),dy=t.clientY-(r.top+r.height/2);const L=Math.hypot(dx,dy),mx=50;if(L>mx){dx*=mx/L;dy*=mx/L}knob.style.transform=`translate(${dx}px,${dy}px)`;joy.x=dx/mx;joy.y=dy/mx}
+joyEl.addEventListener('touchstart',e=>{const t=e.changedTouches[0];joyId=t.identifier;joyMove(t);e.preventDefault()},{passive:false});
+addEventListener('touchmove',e=>{for(const t of e.changedTouches)if(t.identifier===joyId)joyMove(t)},{passive:false});
+addEventListener('touchend',e=>{for(const t of e.changedTouches)if(t.identifier===joyId){joyId=null;joy.x=joy.y=0;knob.style.transform=''}});
+$('jumpB').addEventListener('touchstart',e=>{jumpQ=true;e.preventDefault()},{passive:false});
+$('runB').addEventListener('touchstart',e=>{touchRun=!touchRun;$('runB').classList.toggle('on',touchRun);e.preventDefault()},{passive:false});
+// ---------- STANJE ----------
+const P={pos:new THREE.Vector3(),vel:new THREE.Vector3(),onGround:false,ground:null,yaw:0,coyote:0};
+let S,playing=false,lastT=0,walkPh=0,camPos=new THREE.Vector3(0,6,12);
+function newState(){return{cp:0,got:[],coins:0,gems:0,map:0,time:0,lives:3,sw:[]}}
+function persist(){localStorage.setItem('sa_save4',JSON.stringify(S))}
+function applyState(){items.forEach(it=>it.m.visible=!S.got.includes(it.id));if(!S.sw)S.sw=[];updSwitches();setDoor(true);cpFlags.forEach((f,i)=>f&&f.material.color.set(i<=S.cp?0x22dd55:0x999999));respawn();hud()}
+function setDoor(instant){const o=doorOpen();door.active=!o;door.target=o?1:0;if(instant)door.t=door.target;doorGems.forEach((g,i)=>{g.material.color.set(i<S.gems?0xffd700:0x666666);g.material.emissive&&g.material.emissive.set(i<S.gems?0x8a6a00:0)})}
+function doorOpen(){return S.gems>=3&&(S.sw||[]).length>=3}
+function updSwitches(){switches.forEach((s,i)=>{const on=(S.sw||[]).includes(i);s.top.material.color.set(on?0x33dd55:0xff5050);s.top.material.emissive.set(on?0x0a5a1a:0x661010);s.top.position.y=on?.25:.4})}
+function respawn(){P.pos.copy(cps[S.cp]).add(new THREE.Vector3(0,.1,0));P.vel.set(0,0,0);P.yaw=0}
+function score(){return S.coins*10+S.gems*50+(S.sw||[]).length*30+(doorOpen()?100:0)}
+function hud(){$('coinsH').textContent=`🪙 ${S.coins}/${totalCoins}`;$('gemH').textContent=`🔥 ${S.gems}/3 · 🔴 ${(S.sw||[]).length}/3`;$('scoreH').textContent=`⭐ ${score()}`;$('livesH').textContent='❤️'.repeat(Math.max(0,S.lives))+'🤍'.repeat(3-Math.max(0,S.lives))}
+// ---------- FIZIKA ----------
+const R=.35,H=1.8,G=23,JV=10.2;
+function boxOf(s){const c=s.mesh.position;return{x0:c.x-s.w/2,x1:c.x+s.w/2,y0:c.y-s.h/2,y1:c.y+s.h/2,z0:c.z-s.d/2,z1:c.z+s.d/2}}
+function overlap(b,p){return p.x+R>b.x0&&p.x-R<b.x1&&p.z+R>b.z0&&p.z-R<b.z1&&p.y+H>b.y0&&p.y<b.y1}
+function physics(dt,t){
+ // pokretne platforme
+ movers.forEach(s=>{const m=s.move,o=s.mesh.position.clone();s.mesh.position[m.ax]=s.base[m.ax]+Math.sin(t*m.spd+(m.ph||0))*m.amp;s.delta.subVectors(s.mesh.position,o)});
+ if(P.onGround&&P.ground&&P.ground.move)P.pos.add(P.ground.delta);
+ // ulaz
+ let ix=(keys.KeyD||keys.ArrowRight?1:0)-(keys.KeyA||keys.ArrowLeft?1:0)+joy.x,iz=(keys.KeyS||keys.ArrowDown?1:0)-(keys.KeyW||keys.ArrowUp?1:0)+joy.y;
+ const L=Math.hypot(ix,iz);if(L>1){ix/=L;iz/=L}
+ const run=keys.ShiftLeft||keys.ShiftRight||touchRun,sp=run?9.5:5.5;
+ const ax=P.onGround?14:6;P.vel.x+=(ix*sp-P.vel.x)*Math.min(1,ax*dt);P.vel.z+=(iz*sp-P.vel.z)*Math.min(1,ax*dt);
+ if(L>.1)P.yaw=Math.atan2(-ix,-iz);
+ P.coyote=P.onGround?.22:P.coyote-dt;
+ if(jumpQ&&P.coyote>0){P.vel.y=JV;P.coyote=0;P.onGround=false;sfx.jump()}jumpQ=false;
+ P.vel.y-=G*dt;
+ const act=solids.filter(s=>s.active);
+ // os X, Z, Y redom
+ for(const a of ['x','z']){P.pos[a]+=P.vel[a]*dt;for(const s of act){const b=boxOf(s);if(overlap(b,P.pos)){if(P.pos.y>b.y1-.45){P.pos.y=b.y1;continue}const c=(b[a+'0']+b[a+'1'])/2;P.pos[a]=P.pos[a]<c?b[a+'0']-R-.001:b[a+'1']+R+.001;P.vel[a]=0}}}
+ P.pos.y+=P.vel.y*dt;P.onGround=false;P.ground=null;
+ for(const s of act){const b=boxOf(s);if(overlap(b,P.pos)){if(P.vel.y<=0&&P.pos.y-P.vel.y*dt>=b.y1-.5){P.pos.y=b.y1;P.vel.y=0;P.onGround=true;P.ground=s}else if(P.vel.y>0){P.pos.y=b.y0-H;P.vel.y=0}}}
+ if(P.pos.y<-4){sfx.fall();if(!window.V19||V19.hit()){S.lives--;persist()}if(S.lives<=0){respawn();playing=false;stopMusic();if(window.V19)V19.gameOver();else showUI('over')}else{say(T[lang].fall);respawn()}hud()}
+}
+// ---------- PETLJA ----------
+let warnT=0,opening=0;
+function update(dt,t){
+ S.time+=dt;physics(dt,t);
+ // predmeti
+ items.forEach(it=>{if(!it.m.visible)return;it.m.rotation.y+=dt*2.5;if(it.type!=='coin')it.m.position.y=it.y+Math.sin(t*2+it.id)*.15;else it.m.rotation.z+=dt*3;
+  const d=it.m.position.distanceTo(new THREE.Vector3(P.pos.x,P.pos.y+.9,P.pos.z));
+  if(d<(it.type==='key'?1.8:1.1)){it.m.visible=false;S.got.push(it.id);if(it.type==='coin'){S.coins++;sfx.coin()}else if(it.type==='map'){S.map=1;sfx.gem();setDoor(false);say(S.gems>=3&&S.map?T[lang].open:T[lang].map,3500)}else{S.gems++;sfx.gem();setDoor(false);say(doorOpen()?T[lang].open:T[lang].gem+' '+S.gems+'/3',doorOpen()?3500:1800)}hud();persist()}});
+ // kontrolne točke
+ cps.forEach((c,i)=>{if(i>S.cp&&Math.abs(P.pos.z-c.z)<2.5&&Math.abs(P.pos.x-c.x)<8&&P.pos.y>-1){S.cp=i;cpFlags[i].material.color.set(0x22dd55);sfx.cp();say(T[lang].cp);persist()}});
+ // vrata hrama
+ door.t+=(door.target-door.t)*Math.min(1,dt*1.5);door.mesh.position.y=3+6.2*door.t;
+ if(!doorOpen()&&P.pos.z<-122&&P.pos.z>-125&&(warnT-=dt)<0){say(T[lang].locked,2500);warnT=4}
+ // majmuni
+ monkeys.forEach(m=>{m.cd-=dt;m.arm.rotation.z=Math.sin(t*6)*.6+.6;m.g.position.y=Math.abs(Math.sin(t*3))*.15;m.bub.visible=m.cd<0;const dx=P.pos.x-m.g.position.x,dz=P.pos.z-m.g.position.z;m.g.rotation.y=Math.atan2(dx,dz);if(Math.hypot(dx,dz)<4&&m.cd<0){say('🌋 '+m.msg,4500);sfx.cp();m.cd=10}});
+ // cilj - blago
+ if(doorOpen()&&!opening&&P.pos.z<-129.5&&Math.abs(P.pos.x)<5&&P.pos.y>-.5){opening=t;sfx.chest();say('🐉 Plamenko: „Hvala ti, Stjepane! Ti si moj najbolji prijatelj!”',4000);setTimeout(finish,5200)}
+ if(opening){const k=t-opening;cage.position.y=Math.min(6,.6+k*3);if(k<3.2){const a=k*3;dragon.position.set(P.pos.x+Math.cos(a)*2.2,P.pos.y+1.6+Math.sin(k*5)*.3,P.pos.z+Math.sin(a)*2.2);dragon.rotation.y=-a}else{dragon.position.z-=dt*10;dragon.position.y+=dt*5;dragon.rotation.y=Math.PI}}else{dragon.position.y=.6+Math.abs(Math.sin(t*2))*.2}
+ {const w=Math.sin(t*(opening?18:4))*.6;dragon.userData.wl.rotation.z=w;dragon.userData.wr.rotation.z=-w}
+ switches.forEach((s,i)=>{if(!S.sw.includes(i)&&Math.hypot(P.pos.x-s.x,P.pos.z-s.z)<1.4&&P.pos.y<1){S.sw.push(i);updSwitches();sfx.cp();setDoor(false);say(doorOpen()?T[lang].open:T[lang].sw+' '+S.sw.length+'/3',doorOpen()?3500:1800);persist()}});
+ smoke.forEach(o=>{const p=(o.ph+t*.05)%1;o.s.position.set(Math.sin(p*6+o.ph*9)*4,46+p*30,-185);o.s.scale.setScalar(1+p*2.5);o.s.material.opacity=.6*(1-p)});
+ torches.forEach((o,k)=>{const f=1+Math.sin(t*13+k*2)*.15+Math.sin(t*7.3+k)*.1;o.l.intensity=2*f;o.f.scale.setScalar(f)});
+ water.position.y=-1.4+Math.sin(t*.8)*.08;items.forEach(it=>{if(it.m.userData.glow)it.m.userData.glow.material.opacity=.2+Math.sin(t*4)*.1});
+ // animacija lika
+ hero.position.copy(P.pos);let dy=P.yaw-hero.rotation.y;dy=Math.atan2(Math.sin(dy),Math.cos(dy));hero.rotation.y+=dy*Math.min(1,dt*12);
+ const hs=Math.hypot(P.vel.x,P.vel.z);walkPh+=hs*dt*1.6;const sw=P.onGround?Math.sin(walkPh)*Math.min(1,hs/5)*.9:-.6;
+ legL.rotation.x=sw;legR.rotation.x=P.onGround?-sw:.4;armL.rotation.x=-sw;armR.rotation.x=P.onGround?sw:-2.4;body.position.y=1.05+(P.onGround?Math.abs(Math.sin(walkPh))*.05:0);
+ // sjena na tlu
+ let gy=-50;for(const s of solids){if(!s.active)continue;const b=boxOf(s);if(P.pos.x>b.x0&&P.pos.x<b.x1&&P.pos.z>b.z0&&P.pos.z<b.z1&&b.y1<=P.pos.y+.05&&b.y1>gy)gy=b.y1}
+ shadowBlob.visible=gy>-50;shadowBlob.position.set(P.pos.x,gy+.02,P.pos.z);
+ // kamera
+ const target=new THREE.Vector3(P.pos.x*.7,P.pos.y+4.6,P.pos.z+7.2);camPos.lerp(target,Math.min(1,dt*4));camera.position.copy(camPos);camera.lookAt(P.pos.x,P.pos.y+1.2,P.pos.z-5);
+ sun.position.set(P.pos.x+20,40,P.pos.z+15);sun.target.position.set(P.pos.x,0,P.pos.z);
+ hud();
+}
+function frame(ms){requestAnimationFrame(frame);const t=ms/1000,dt=Math.min(.033,t-lastT||.016);lastT=t;if(playing)update(dt,t);else{camera.position.set(Math.sin(t*.1)*30,18,-50+Math.cos(t*.1)*60);camera.lookAt(0,0,-55)}renderer.render(scene,camera)}
+function finish(){playing=false;stopMusic();sfx.win();const fin=score();const best=Math.max(fin,+localStorage.getItem('sa_best4')||0);localStorage.setItem('sa_best4',best);localStorage.removeItem('sa_save4');
+ $('wTitle').textContent=T[lang].win;$('wText').innerHTML=T[lang].wtext(S.coins,S.gems,fin,Math.floor(S.time))+`<br>🏆 ${T[lang].best}: ${best}`;showUI('win');localStorage.setItem('sa_unlock',Math.max(5,+localStorage.getItem('sa_unlock')||1))}
+function showUI(w){$('start').classList.toggle('hidden',w!=='start');$('win').classList.toggle('hidden',w!=='win');$('over').classList.toggle('hidden',w!=='over');const g=w==='game';$('hud').classList.toggle('hidden',!g);$('help').classList.toggle('hidden',!g||isTouch);$('touch').classList.toggle('hidden',!g||!isTouch);applyLang()}
+function play(fresh){ac();opening=0;cage.position.y=.6;dragon.position.set(0,.6,-133);dragon.rotation.y=0;S=(!fresh&&getSave())||newState();if(!(S.lives>0))S.lives=3;applyState();playing=true;showUI('game');startMusic();lastT=performance.now()/1000;camPos.set(P.pos.x,P.pos.y+4.6,P.pos.z+7.2)}
+$('playB').onclick=()=>play(false);if(/[?&]start=1/.test(location.search)){setTimeout(()=>{try{play(false)}catch(e){}},300)}$('resetB').onclick=()=>{localStorage.removeItem('sa_save4');play(true)};$('againB').onclick=()=>play(true);$('retryB').onclick=()=>{S.lives=3;persist();play(false)};
+$('menuW').onclick=()=>location.href='./';
+$('menuB').onclick=()=>{playing=false;stopMusic();persist();showUI('start')};
+$('musB').onclick=$('musB2').onclick=()=>{ac();toggleMusic()};
+$('langB').onclick=()=>{lang=lang==='hr'?'en':'hr';localStorage.setItem('sa_lang',lang);applyLang()};
+document.addEventListener('visibilitychange',()=>{if(document.hidden){stopMusic();if(playing)persist()}else if(playing)startMusic()});
+updMusBtn();applyLang();showUI('start');requestAnimationFrame(frame);
+</script></body></html>
