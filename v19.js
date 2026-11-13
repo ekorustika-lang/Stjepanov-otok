@@ -13,7 +13,9 @@ function wipe(){try{syncRw()}catch(e){}var cur=Storage.prototype.getItem.call(ls
  Object.keys(ls).forEach(function(k){if(k.indexOf('sa_')!==0||k==='sa_lang'||k==='sa_mus'||k==='sa_profs'||k==='sa_pcur')return;
   if(/^sa_p[^_]+_/.test(k)){if(cur&&k.indexOf('sa_p'+cur+'_')!==0)return;if(/_castle$/.test(k))return}else if(k==='sa_castle')return;
   ls.removeItem(k)})}
-if(LVL>unlocked()){location.replace('./?locked='+LVL);return}
+var __go=null;try{__go=sessionStorage.getItem('sa_go')}catch(e){}
+if(__go&&+__go===LVL){try{sessionStorage.removeItem('sa_go')}catch(e){}if(+ls.getItem('sa_unlock')<LVL)ls.setItem('sa_unlock',String(LVL))}
+else if(LVL>unlocked()){location.replace('./?locked='+LVL);return}
 var lastHit=0;
 function el(h,css){var d=document.createElement('div');d.style.cssText=css;d.innerHTML=h;document.body.appendChild(d);return d}
 var BOX='position:fixed;inset:0;z-index:99998;background:rgba(5,64,94,.85);display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif';
@@ -57,7 +59,7 @@ document.addEventListener('DOMContentLoaded',function(){
   c.innerHTML='<button class="big" id="v19cont" style="background:#3fcf5a;color:#063;box-shadow:0 8px 0 #1d8a32">▶ '+(en()?'CONTINUE GAME':'NASTAVI IGRU')+'</button>';
   l.parentNode.insertBefore(c,l);
   document.getElementById('v19cont').onclick=function(){var n=Math.min(+ls.getItem('sa_last')||1,unlocked());if(n<=1){var p=document.getElementById('playB');p&&p.click()}else location.href=PAGES[n-1]+'?start=1'};
-  var v=document.createElement('div');v.style.cssText='font-size:12px;opacity:.6;margin-top:6px';v.textContent='v30';l.parentNode.appendChild(v);
+  var v=document.createElement('div');v.style.cssText='font-size:12px;opacity:.6;margin-top:6px';v.textContent='v31';l.parentNode.appendChild(v);
   var m=Q.match(/locked=(\d)/);
   if(m){var t=el('<div style="background:#fff8e1;border-radius:16px;padding:14px 20px;font-weight:800;color:#05405e">🔒 '+(en()?'That level is still locked! Finish the previous level first.':'Ta razina je još zaključana! Prvo završi prethodnu razinu.')+'</div>','position:fixed;top:20px;left:0;right:0;z-index:99997;display:flex;justify-content:center;font-family:system-ui,sans-serif');setTimeout(function(){t.remove()},3500)}
   if(/start=1/.test(Q))setTimeout(function(){var p=document.getElementById('playB');p&&p.click()},400);
@@ -79,6 +81,7 @@ function go(){
   if(gone||w.classList.contains('hidden'))return;gone=true;
   try{clearInterval(window.__cd)}catch(e){}
   try{localStorage.setItem('sa_unlock',String(Math.max(LVL+1,+localStorage.getItem('sa_unlock')||1)));localStorage.setItem('sa_last',String(LVL+1))}catch(e){}
+  try{sessionStorage.setItem('sa_go',String(LVL+1))}catch(e){}
   setTimeout(function(){location.href=PAGES[LVL]+'?start=1'},300);
  }).observe(w,{attributes:true,attributeFilter:['class']});
 }
